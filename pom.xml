@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>us.irdev</groupId>
+  <artifactId>gtk</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- project static versions -->
+    <maven-minimum.version>3.6.0</maven-minimum.version>
+    <java.version>20</java.version>
+
+    <!-- dependency versions - get a report on updates with
+          > mvn -N versions:display-property-updates
+         or omit the -N to traverse the entire project hierarchy -->
+    <junit-jupiter.version>5.10.0</junit-jupiter.version>
+    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+    <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+    <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+    <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
+    <maven-enforcer-plugin.version>3.4.0</maven-enforcer-plugin.version>
+    <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+    <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+    <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
+    <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
+  </properties>
+
+  <developers>
+    <developer>
+      <name>Bretton Wade</name>
+      <email>bretton.wade@irdev.us</email>
+      <organization>Inbound Research</organization>
+      <organizationUrl>https://irdev.us/</organizationUrl>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- make sure the build environment is up to snuff -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>${maven-minimum.version}</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>${java.version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- configure the java compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
+          <fork>true</fork>
+        </configuration>
+      </plugin>
+
+      <!-- sets the is.snapshot property to true if version is a SNAPSHOT -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build-helper-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>build-helper-regex-is-snapshot</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>regex-properties</goal>
+            </goals>
+            <configuration>
+              <regexPropertySettings>
+                <regexPropertySetting>
+                  <name>is.snapshot</name>
+                  <value>${project.version}</value>
+                  <regex>.*-SNAPSHOT</regex>
+                  <replacement>true</replacement>
+                  <failIfNoMatch>false</failIfNoMatch>
+                </regexPropertySetting>
+              </regexPropertySettings>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- some build level reporting -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>${maven-antrun-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <exportAntProperties>true</exportAntProperties>
+              <target>
+                <!-- this profile.name comes from the settings.xml/profile properties -->
+                <echo level="info" message="current profile: ${profile.name}" />
+                <echo level="info" message="is.snapshot: ${is.snapshot} (${project.version})" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- generate docs from javadoc-formatted comments embedded in the source -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <doclint>none</doclint> <!-- disables fail-on-error for javadoc errors -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- enable testing -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+      </plugin>
+
+      <!-- embed the java source into a library to facilitate debugging for
+           downstream libraries -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven-source-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>source</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- this is implicitly drawn in by the java compiler at an older version,
+           we make it explicit because the default is deprecated and causes
+           warnings -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
+      </plugin>
+
+      <!-- establish the version of the assembly plugin to use in child projects -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-assembly-plugin.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+        <configuration>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>${maven-release-plugin.version}</version>
+        <configuration>
+          <preparationGoals>clean verify</preparationGoals>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
