@@ -300,7 +300,7 @@ public class SampledFunctionTest {
   /**
    * a helper function adapter to create a sine wave function we can use to compute crossings.
    */
-  private static class TupleFunctionAtAdapter implements TupleFunctionAt {
+  private static class TupleFunctionAtAdapter implements SampledFunction.TupleFunctionAt {
     private double scale;
     private double count;
 

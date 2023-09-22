@@ -244,8 +244,8 @@ public class SampledFunction {
   // -----------------------------------------------------------------------------------------------
 
   /**
-   * extract an iso contour from the sampled function for a target value. the iso-contour represents
-   * where the function has the target value.
+   * extract an iso-line from the sampled function for a target value. the contour represents where
+   * the function has the target value. (https://en.wikipedia.org/wiki/Contour_line)
    * @param targetValue - the value to extract iso-contours for
    * @return - a list of segments representing piecewise linear approximations to the iso-contour.
    * the linear segments can be refined using the refineSegments method.
@@ -386,14 +386,38 @@ public class SampledFunction {
     return xy;
   }
 
+  /**
+   * given an estimated coordinate in the domain to use as a starting point, follow the gradient of
+   * the function to improve the estimate.
+   * @param x -
+   * @param y -
+   * @param targetValue -
+   * @return the improved estimate
+   */
   public Tuple refineSampleLocation (double x, double y, double targetValue) {
     return refineSampleLocation(x, y, targetValue, REFINE_SAMPLE_LOCATION_STEPS);
   }
 
+  /**
+   * given an estimated coordinate in the domain to use as a starting point, follow the gradient of
+   * the function to improve the estimate.
+   * @param x -
+   * @param y -
+   * @param targetValue -
+   * @param steps -
+   * @return the improved estimate
+   */
   public Tuple refineSampleLocation (double x, double y, double targetValue, int steps) {
     return refineSampleLocation(new Tuple(x, y), targetValue, steps);
   }
 
+  /**
+   * given an estimated coordinate in the domain to use as a starting point, follow the gradient of
+   * the function to improve the estimate.
+   * @param xy -
+   * @param targetValue -
+   * @return the improved estimate
+   */
   public Tuple refineSampleLocation (Tuple xy, double targetValue) {
     return refineSampleLocation(xy, targetValue, REFINE_SAMPLE_LOCATION_STEPS);
   }
@@ -402,6 +426,14 @@ public class SampledFunction {
   // refine segments into curves
   // -----------------------------------------------------------------------------------------------
 
+  /**
+   * improve the error bounds on an iso-line by splitting it in the middle and refining the middle
+   * point
+   * @param segment -
+   * @param targetValue -
+   * @param maxSegmentLength -
+   * @param output -
+   */
   public void refineSegment(Segment segment, double targetValue, double maxSegmentLength, List<Segment> output) {
     // depth-first bisection and refinement of each new vertex
     if (segment.length() > maxSegmentLength) {
@@ -416,6 +448,10 @@ public class SampledFunction {
     }
   }
 
+  // XXX does this belong in "Segments"?
+  /**
+   *
+   */
   public List<Segment> refineSegments (List<Segment> segments, double targetValue, double maxSegmentLength) {
     List<Segment> output = new ArrayList<>();
     for (Segment segment: segments) {
@@ -453,6 +489,17 @@ public class SampledFunction {
   }
 
   /**
+   * an interface for a function that returns the indexing tuple at some offset x. the indexing
+   * tuple is then used to get the SampledFunction value. for instance, the sampled function might
+   * be the depth of water, and the TupleFunctionAt might return the position of a boat by time. the
+   * result is a query of the depth of water by time, and we can find the point at which the boat
+   * moves into water of a certain depth.
+   */
+  public interface TupleFunctionAt {
+    Tuple at(double x);
+  }
+
+  /**
    * compute the candidate value at x and pre-test what side of the iso this sample is on
    */
   private Crossing at (TupleFunctionAt tfa, double x, double targetValue) {
@@ -478,12 +525,11 @@ public class SampledFunction {
 
     // a and b must be on opposite sides of the target value
     if (a.above == b.above) {
-      // XXX could throw an exception? this could be a normal case if we end up dicing a region
-      // XXX into lots of little pieces
+      // this is a normal case if we dice the search region, so we just do nothing
       return null;
     }
 
-    // loop until the two points converge
+    // repeatedly bisect the search region until the two boundary points converge
     while (!similar (a.value, b.value)) {
       // get the midpoint of the domain
       Crossing c = at (tfa, (a.x + b.x) * 0.5, targetValue);
@@ -498,6 +544,21 @@ public class SampledFunction {
     return Crossing.merge (a, b);
   }
 
+  /**
+   * find all the crossings within a search region. this is basically a root finder, so we have to
+   * know a little something about the function we are querying. the sampling strategy here is to
+   * divide the search space into uniformly sized pieces. this is good if we assume the sample
+   * domain is traversed with uniform velocity, such as a satellite in a circular orbit, but might
+   * need some additional thought in the future to provide a sampling strategy that is more suitable
+   * to say, a highly elliptical orbit, where uniform time slices might create very different sizes
+   * of the projected position steps over the domain.
+   * @param tfa - the trajectory function we are moving along to find roots
+   * @param xa - the first bound of the x parameter passed to the tfa
+   * @param xb - the second bound of the x parameter passed to the tfa
+   * @param targetValue - the value we are searching for in the SampledFunction
+   * @param crossings - the (estimated) number of roots we will find in the query domain
+   * @return a list of the roots found, or null if none are found
+   */
   public List<Crossing> findCrossings(TupleFunctionAt tfa, double xa, double xb, double targetValue, int crossings) {
     List<Crossing> output = new ArrayList<>();
 
@@ -515,7 +576,7 @@ public class SampledFunction {
       }
     }
 
-    // return what we found
+    // return what we found, null if nothing...
     return (output.size() > 0) ? output : null;
   }
 }
