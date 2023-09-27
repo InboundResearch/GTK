@@ -8,12 +8,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static us.irdev.gtk.reader.Utility.slurpFile;
 
 public class TableTest {
   @Test
   public void testFormatReaderDelimited () {
-    String input = slurpFile ("data/sample.csv", StandardCharsets.UTF_8);
+    String input = Utility.slurpFile ("data/sample.csv", StandardCharsets.UTF_8);
     assertNotEquals(null, input);
     Table tableReader = new Table (input, ',', '#');
     List<Map<String, String>> table = tableReader.readTable ();

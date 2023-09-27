@@ -7,12 +7,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static us.irdev.gtk.reader.Utility.slurpFile;
 
 public class DelimitedTest {
   @Test
   public void testDelimited () {
-    String input = slurpFile ("data/sample.csv", StandardCharsets.UTF_8);
+    String input = Utility.slurpFile ("data/sample.csv", StandardCharsets.UTF_8);
     assertNotEquals(null, input);
     Delimited delimitedReader = new Delimited (input, ',', '#');
     List<List<String>> array = delimitedReader.readArray ();
