@@ -16,3 +16,7 @@ out
 
 # macos
 .DS_Store
+
+# random other things
+output/
+!output/readme.md
