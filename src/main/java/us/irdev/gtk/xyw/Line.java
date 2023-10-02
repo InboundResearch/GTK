@@ -1,6 +1,7 @@
 package us.irdev.gtk.xyw;
 
-import static us.irdev.gtk.xyw.Tuple.*;
+import static us.irdev.gtk.xyw.Tuple.PT;
+import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class Line {
   public final Tuple abc;
@@ -10,10 +11,7 @@ public class Line {
    * @param abc - the coefficients to the line equation ax + by + c = 0 stored as a tuple
    */
   public Line(Tuple abc) {
-    // normalize the line equation so that the normal vector (n) points from the origin to the line
-    // and c is the positive distance along n to the line from the origin. note this means the line
-    // does not capture any sense of direction
-    this.abc = abc.scale((abc.w < 0) ? -1 : 1);
+    this.abc = abc;
   }
 
   /**
@@ -41,6 +39,13 @@ public class Line {
   }
 
   /**
+   * @return a line normalized so c is positive and the vector ab points towards the origin
+   */
+  public Line normalized () {
+    return (abc.w < 0) ? new Line (abc.scale(-1)) : this;
+  }
+
+  /**
    * @param point - a point on the line
    * @param direction - the general direction of the line from the point (it is assumed to go both
    *                    along and against the direction)
@@ -53,19 +58,35 @@ public class Line {
   }
 
   /**
-   * @param x - the x value for a vertical line
+   * @param x - the x value for a vertical line proceeding up
    * @return the line object constructed from a normal and offset
    */
-  public static Line vertical(double x) {
+  public static Line verticalUp (double x) {
     return fromPointVector (PT (x, 0), VEC (0, 1));
   }
 
   /**
-   * @param y - the y value for a horizontal line
+   * @param x - the x value for a vertical line proceeding down
    * @return the line object constructed from a normal and offset
    */
-  public static Line horizontal(double y) {
+  public static Line verticalDown (double x) {
+    return fromPointVector (PT (x, 0), VEC (0, -1));
+  }
+
+  /**
+   * @param y - the y value for a horizontal line proceeding to the right
+   * @return the line object constructed from a normal and offset
+   */
+  public static Line horizontalRight (double y) {
     return fromPointVector (PT (0, y), VEC (1, 0));
+  }
+
+  /**
+   * @param y - the y value for a horizontal line proceeding to the left
+   * @return the line object constructed from a normal and offset
+   */
+  public static Line horizontalLeft (double y) {
+    return fromPointVector (PT (0, y), VEC (-1, 0));
   }
 
   /**
@@ -86,20 +107,18 @@ public class Line {
    * @return the Line object constructed from the slope and intercept
    */
   public static Line fromSlopeIntercept (double slope, double intercept) {
-    if (slope == Double.POSITIVE_INFINITY) {
-      return fromPointVector(PT (intercept, 0), VEC (0, 1));
-    }
-    if (slope == Double.NEGATIVE_INFINITY) {
-      return fromPointVector(PT (intercept, 0), VEC (0, -1));
-    }
-    return fromTwoPoints (PT (-1, -slope + intercept), PT (1, slope + intercept));
+    return (slope == Double.POSITIVE_INFINITY) ? verticalUp(intercept) :
+           (slope == Double.NEGATIVE_INFINITY) ? verticalDown(intercept) :
+            fromTwoPoints (PT (-1, -slope + intercept), PT (1, slope + intercept));
   }
 
   /**
    * @return the slope of the line for the y = mx + b slope/intercept form
    */
   public double m () {
-    return abc.x / -abc.y;
+    return Numerics.similar(abc.y, 0) ?
+            (abc.x < 0) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY :
+            -abc.x / abc.y;
   }
 
   /**
@@ -107,7 +126,7 @@ public class Line {
    * we return the x-intercept.
    */
   public double b () {
-    return abc.w / (Numerics.similar(abc.y, 0) ? 1 : -abc.y);
+    return -abc.w / (Numerics.similar(abc.y, 0) ? abc.x : abc.y);
   }
 
   /**

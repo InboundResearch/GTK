@@ -56,18 +56,15 @@ public class Segment {
    *         own lengths)
    */
   public static Tuple intersect(Segment s1, Segment s2) {
-    // compute the cosine of the closing angle between the lines times the length of the segment
-    double vCosTheta = -(s1.v.dot (s2.line.abc));
-
-    // check if the two lines are not parallel
-    if (Numerics.similar (vCosTheta, 0)) {
-      return null;
+    // two segments intersect only if the endpoints of s1 are on opposite sides of the line s2
+    if (Math.signum(s2.line.distanceToPoint (s1.a)) != Math.signum(s2.line.distanceToPoint(s1.b))) {
+      // two segments intersect only if the endpoints of s2 are on opposite sides of the line s1
+      if (Math.signum(s1.line.distanceToPoint (s2.a)) != Math.signum(s1.line.distanceToPoint(s2.b))) {
+        // compute the actual point of intersection
+        return Line.intersect(s1.line, s2.line);
+      }
     }
-
-    // compute the "time" of intersection as a scalar on v, and return the segment origin plus the
-    // scaled version of v
-    double t = s2.line.distanceToPoint(s1.a) / vCosTheta;
-    return s1.a.add (s1.v.scale(t));
+    return null;
   }
 
   public static boolean similar (Segment a, Segment b) {
