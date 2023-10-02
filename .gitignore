@@ -18,5 +18,5 @@ out
 .DS_Store
 
 # random other things
-output/
+output/*
 !output/readme.md
