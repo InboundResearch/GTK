@@ -2,6 +2,10 @@ package us.irdev.gtk.xyw;
 
 import us.irdev.gtk.reader.Table;
 import us.irdev.gtk.reader.Utility;
+import us.irdev.gtk.svg.Axis;
+import us.irdev.gtk.svg.Frame;
+import us.irdev.gtk.svg.Grid;
+import us.irdev.gtk.svg.Traits;
 import us.irdev.gtk.xyw.bb.BoundaryBehaviorAccordion;
 import us.irdev.gtk.xyw.bb.BoundaryBehaviorClamp;
 import us.irdev.gtk.xyw.bb.BoundaryBehaviorValue;
@@ -10,6 +14,7 @@ import us.irdev.gtk.xyw.db.Row;
 import us.irdev.gtk.xyw.db.Rows;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +37,35 @@ public class SampledFunctionTest {
   public void testConstructor() {
   }
 
+  private List<Segment> getRefinedIso(SampledFunction function, double iso) {
+    List<Segment> segments = function.iso(iso);
+    segments = function.refineSegments(segments, iso, 1.0);
+    return segments;
+  }
+
+  private void drawSvg(String name, SampledFunction function) {
+    // add a svg file to show the result
+    Frame frame = new Frame (function.getDomain())
+            .begin (new Traits (0.1, "#bbb", "none"))
+            .element(new Grid (18, 18))
+            .begin (new Traits (0.25, "#444", "none"))
+            .element(new Axis ())
+            .begin (new Traits (0.25, "#070", "none"))
+            .poly (getRefinedIso(function, 0))
+            .begin (new Traits (0.25, "#007", "none"));
+    for (int i = 1; i < 18; ++i) {
+      frame.poly (getRefinedIso (function, i * 5.0));
+    }
+    frame
+            .begin (new Traits (0.25, "#700", "none"));
+    for (int i = 1; i < 18; ++i) {
+      frame.poly (getRefinedIso (function, i * -5.0));
+    }
+    frame.end();
+    String svg = frame.emitSvg(name, 800);
+    Utility.writeFile(Paths.get("output", name + ".svg").toString(), svg);
+  }
+
   @Test
   public void testRealFile() {
     String input = Utility.slurpFile ("data/sample.txt");
@@ -49,6 +83,8 @@ public class SampledFunctionTest {
     PolyLine polyLine = polyLines.get(0);
     Tuple[] points = polyLine.getPoints();
     assertTrue(points.length > (360 / 5));
+
+    drawSvg("testRealFile", function);
   }
 
   @Test
@@ -363,6 +399,24 @@ public class SampledFunctionTest {
   }
 
   @Test
+  public void testWithValue() {
+    Domain domain = new Domain (-180, 175, -90, 90);
+    Tuple interval = VEC (5, 5);
+    // simple perfectly horizontal isolines, scaled down just a bit
+    Rows db = Rows.fromFill(domain, interval, xy -> xy.y);
+    SampledFunction function = SampledFunction.fromDatabase (db, new BoundaryBehaviorWrap (), new BoundaryBehaviorAccordion ());
+    List<Segment> segments = function.iso (0.5);
+    for (Segment segment: segments) {
+      // verify the found y coordinate is actally a little above the iso value, since we scaled it
+      assertSimilar(0.5, segment.a.y);
+      assertSimilar(segment.a.y, segment.b.y);
+    }
+
+    drawSvg("testWithValue", function);
+    Utility.writeFile(Paths.get("output", "testWithValue.csv").toString(), db.toString ("geo lon (deg)", "geo lat (deg)", "mag lat (deg)"));
+  }
+
+  @Test
   public void testWithNoGradient() {
     Domain domain = new Domain (-180, 175, -90, 90);
     Tuple interval = VEC (5, 5);
@@ -375,6 +429,9 @@ public class SampledFunctionTest {
       assertSimilar(0.5 / 0.95, segment.a.y);
       assertSimilar(segment.a.y, segment.b.y);
     }
+
+    drawSvg("testWithNoGradient", function);
+    Utility.writeFile(Paths.get("output", "testWithNoGradient.csv").toString(), db.toString ("geo lon (deg)", "geo lat (deg)", "mag lat (deg)"));
   }
 
   @Test
@@ -383,6 +440,10 @@ public class SampledFunctionTest {
     Tuple interval = VEC (5, 5);
     Rows db = Rows.fromFill(domain, interval, xy -> (xy.y * 0.95) + (3 * Math.cos(1 + Math.toRadians(xy.x) * 2)));
     SampledFunction function = SampledFunction.fromDatabase (db, new BoundaryBehaviorWrap (), new BoundaryBehaviorAccordion ());
+    List<Segment> segments = function.iso (0.5);
+
+    drawSvg("testWithSinusoidal", function);
+    Utility.writeFile(Paths.get("output", "testWithSinusoidal.csv").toString(), db.toString ("geo lon (deg)", "geo lat (deg)", "mag lat (deg)"));
   }
 
 }

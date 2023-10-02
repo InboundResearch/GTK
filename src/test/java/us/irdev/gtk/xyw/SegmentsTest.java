@@ -7,6 +7,7 @@ import java.util.List;
 
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
+import static us.irdev.gtk.xyw.TupleCargo.TC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -51,13 +52,16 @@ public class SegmentsTest {
   interface TupleFunc {
     Tuple value(double x);
   }
-  private Segments makeSegments (double low, double high, double step, TupleFunc tupleFunc) {
+
+  public static Segments makeSegments (double low, double high, double step, TupleFunc tupleFunc) {
     // generate a bunch of points in the tuplefunc
     List<Tuple> points = new ArrayList<>();
     int steps = (int) Math.round (((high - low) / step)) + 1;
     assert (steps > 1);
     for (int i = 0; i < steps; ++i) {
-      points.add (tupleFunc.value(low + (i * step)));
+      double x = low + (i * step);
+      TupleCargo tpc = TC(tupleFunc.value(x)).put("x", x);
+      points.add (tpc);
     }
 
     // make a list of segments from the points
@@ -79,26 +83,4 @@ public class SegmentsTest {
     assertSimilar(new Domain (-10, 10, -2, 2), segments.domain);
   }
 
-  @Test
-  public void testIntersection() {
-    // generate a bunch of points in a sinusoidal line
-    Segments a = makeSegments (-10, 10, 0.1, x -> PT(x, x * 0.1));
-    Segments b = makeSegments (-10, 10, 0.1, x -> PT(x * 0.1, x + 2));
-
-    // precompute a line intersection for comparison
-    Tuple testPoint = Line.intersect (
-            Line.fromTwoPoints (a.segments.get(0).a, a.segments.get(10).b),
-            Line.fromTwoPoints (b.segments.get(0).a, b.segments.get(10).b)
-    );
-    List<Tuple> result = Segments.intersect (a, b);
-  }
-
-  @Test
-  public void testIntersectionPathological() {
-    // generate a bunch of points in a spiral line
-    Segments a = makeSegments (1, 3, 0.05, x -> PT(Math.cos(x * 2 * Math.PI) * x, Math.sin(x * 2 * Math.PI) * x));
-    Segments b = makeSegments (-10, 10, 0.1, x -> PT(x * 0.1, x + 2));
-
-    //List<Tuple> result = Segments.intersect (a, b);
-  }
 }

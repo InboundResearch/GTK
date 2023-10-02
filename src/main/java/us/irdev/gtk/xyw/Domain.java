@@ -30,7 +30,8 @@ public class Domain {
    * @param minX, maxX, minY, maxY - the four boundaries of the domain
    */
   public Domain (double minX, double maxX, double minY, double maxY) {
-    this (PT (minX, minY), PT (maxX, maxY));
+    min = PT (minX, minY);
+    max = PT (maxX, maxY);
   }
 
   /**
@@ -161,10 +162,29 @@ public class Domain {
     return (codePoint(point) == INSIDE);
   }
 
+  private static Tuple moveTo (double scale, Tuple a, Tuple b) {
+    return a.add(b.subtract(a).scale(scale));
+  }
+
+  private static Tuple moveToX(double x, Tuple a, Tuple b) {
+    return moveTo ((x - a.x) / (b.x - a.x), a, b);
+  }
+
+  private static Tuple moveToY(double y, Tuple a, Tuple b) {
+    return moveTo ((y - a.y) / (b.y - a.y), a, b);
+  }
+
+  private static Tuple moveToXY(double x, double y, Tuple a, Tuple b) {
+    double nx = (x - a.x) / (b.x - a.x);
+    double ny = (y - a.y) / (b.y - a.y);
+    return moveTo (Math.max(nx, ny), a, b);
+  }
+
   /**
    * @return true if any part of the segment is within the domain, roughly following the structure
-   * of a cohen-sutherland style clipping algorithm - we use this formulation because it handles
-   * trivial cases quickly and efficiently answers the containment question.
+   * of a cohen-sutherland style clipping algorithm with the fast-clip table obtimizations for each
+   * case - we use this formulation because it handles trivial cases quickly and efficiently answers
+   * the containment question.
    * @param segment - the segment to test for containment
    */
   public boolean contains (Segment segment) {
@@ -174,11 +194,13 @@ public class Domain {
     int cA = codePoint(a);
     int cB = codePoint(b);
 
-    // loop until we succeed or fail, the pathological case being the two points in opposite corner
-    // quadrants, but not intersecting the domain. this case would present 4 possible segment
-    // intersections with the domain boundaries, but in the worst case we would only need to
-    // evaluate three of them until we found a shared outside zone.
-    while (true) {
+    // loop until we succeed or fail (with an arbitrary limit we should never hit). the pathological
+    // case here is two points in opposite corner quadrants, but not intersecting the domain. this
+    // case would present four possible segment intersections with the domain boundaries, but by
+    // being specific about the best choice to make at each iteration, we should never need to
+    // evaluate more than one boundary intersection.
+    int counter = 0;
+    while (++counter < 4){
       // compute a combination code to evaluate
       int cC = (cA << 4) | cB;
       switch (cC) {
@@ -199,6 +221,7 @@ public class Domain {
         case 0b01010000:   case 0b01000000:   case 0b01100000:
 
         case 0b10000100:   case 0b01001000:   case 0b00010010:   case 0b00100001:
+          assert (counter <= 2);
           return true;
 
         // trivial exclusion cases - cases where both points share an external flag:
@@ -217,6 +240,7 @@ public class Domain {
         case 0b01010110:   case 0b01100101:   case 0b01010100:   case 0b01000101:   case 0b01000110:   case 0b01100100:
         case 0b10010001:   case 0b00011001:   case 0b10010101:   case 0b01011001:   case 0b00010101:   case 0b01010001:
         case 0b10100010:   case 0b00101010:   case 0b10100110:   case 0b01101010:   case 0b00100110:   case 0b01100010:
+          assert (counter <= 2);
           return false;
 
         // complex cases, type 1 - both points are outside on only one axis:
@@ -231,23 +255,19 @@ public class Domain {
 
         case 0b10000001:   case 0b10000010:
           // a is above, move it to the top edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((max.y - a.y) / (b.y - a.y)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToY(max.y, a, b));
           break;
         case 0b01000001:   case 0b01000010:
           // a is below, move it to the bottom edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((min.y - a.y) / (b.y - a.y)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToY(min.y, a, b));
           break;
         case 0b00011000:   case 0b00010100:
           // a is left, move it to the left edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((min.x - a.x) / (b.x - a.x)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToX(min.x, a, b));
           break;
         case 0b00101000:   case 0b00100100:
           // a is right, move it to the right edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((max.x - a.x) / (b.x - a.x)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToX(max.x, a, b));
           break;
 
         // complex cases, type 2 - one points is outside on only one axis, the other is in a corner
@@ -264,48 +284,40 @@ public class Domain {
         // a is the corner
         case 0b01011000:   case 0b01101000:
           // b is above, move b to the top edge and reclassify
-          b = b.add(a.subtract(b).scale((max.y - b.y) / (a.y - b.y)));
-          cB = codePoint (b);
+          cB = codePoint (b = moveToY(max.y, b, a));
           break;
         case 0b10010100:   case 0b10100100:
           // b is below, move b to the bottom edge and reclassify
-          b = b.add(a.subtract(b).scale((min.y - b.y) / (a.y - b.y)));
-          cB = codePoint (b);
+          cB = codePoint (b = moveToY(min.y, b, a));
           break;
         case 0b10100001:   case 0b01100001:
           // b is left, move b to the left edge and reclassify
-          b = b.add(a.subtract(b).scale((min.x - b.x) / (a.x - b.x)));
-          cB = codePoint (b);
+          cB = codePoint (b = moveToX(min.x, b, a));
           break;
         case 0b10010010:   case 0b01010010:
           // b is right, move b to the right edge and reclassify
-          b = b.add(a.subtract(b).scale((max.x - b.x) / (a.x - b.x)));
-          cB = codePoint (b);
+          cB = codePoint (b = moveToX(max.x, b, a));
           break;
 
         // b is the corner
         case 0b10000101:   case 0b10000110:
           // a is above, move it to the top edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((max.y - a.y) / (b.y - a.y)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToY(max.y, a, b));
           break;
 
         case 0b01001001:   case 0b01001010:
           // a is below, move it to the bottom edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((min.y - a.y) / (b.y - a.y)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToY(min.y, a, b));
           break;
 
         case 0b00011010:   case 0b00010110:
           // a is left, move it to the left edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((min.x - a.x) / (b.x - a.x)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToX(min.x, a, b));
           break;
 
         case 0b00101001:   case 0b00100101:
           // a is right, move it to the right edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((max.x - a.x) / (b.x - a.x)));
-          cA = codePoint (a);
+          cA = codePoint (a = moveToX(max.x, a, b));
           break;
 
         // complex cases, type 3 - both end points are in corner quadrants:
@@ -318,22 +330,37 @@ public class Domain {
         // ----------+----------+----------
         //   0b0101  |  0b0100  |  0b0110
 
-        case 0b10010110: case 0b10100101:
-          // a is above, move it to the top edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((max.y - a.y) / (b.y - a.y)));
-          cA = codePoint (a);
+        case 0b10010110: {
+          // a is above-left, move it to the nearest edge of the domain and re-classify
+          cA = codePoint (a = moveToXY(min.x, max.y, a, b));
           break;
-        case 0b01101001: case 0b01011010:
-          // a is below, move it to the bottom edge of the domain and re-classify
-          a = a.add(b.subtract(a).scale((min.y - a.y) / (b.y - a.y)));
-          cA = codePoint (a);
+        }
+
+        case 0b10100101: {
+          // a is above-right, move it to the nearest edge of the domain and re-classify
+          cA = codePoint (a = moveToXY(max.x, max.y, a, b));
           break;
+        }
+
+        case 0b01101001: {
+          // a is below-right, move it to the nearest edge of the domain and re-classify
+          cA = codePoint (a = moveToXY(max.x, min.y, a, b));
+          break;
+        }
+
+        case 0b01011010: {
+          // a is below-left, move it to the nearest edge of the domain and re-classify
+          cA = codePoint (a = moveToXY(min.x, min.y, a, b));
+          break;
+        }
 
         default:
           System.err.printf ("Invalid code: 0b%8b%n", cC);
           return false;
       }
     }
+    System.err.print ("Unknown failure");
+    return false;
   }
 
   /**
@@ -350,5 +377,12 @@ public class Domain {
     Tuple center = center ();
     Tuple half = max.subtract(center).scale (factor);
     return new Domain (center.subtract(half), center.add(half));
+  }
+
+  /**
+   * @return a copy of the domain padded with the given vector
+   */
+  public Domain pad (Tuple padding) {
+    return new Domain (min.subtract(padding), max.add(padding));
   }
 }

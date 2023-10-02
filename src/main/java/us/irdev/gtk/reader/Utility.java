@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class Utility {
   /**
@@ -31,5 +33,34 @@ public class Utility {
    */
   public static String slurpFile (String path) {
     return slurpFile(path, StandardCharsets.UTF_8);
+  }
+
+  /**
+   * write a text file from a string
+   * @returns true if the file was successfully written
+   * @param path - the filesystem-depedent path to save the file to
+   * @param text - the content top save to a file
+   * @param encoding - the encoding to use when converting the text to bytes
+   */
+  public static boolean writeFile (String path, String text, Charset encoding) {
+    try {
+      Path targetPath = Paths.get (path);
+      byte[] bytes = text.getBytes (encoding);
+      Files.write (targetPath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+      return true;
+    }
+    catch (IOException ignored) {
+    }
+    return false;
+  }
+
+  /**
+   * write a text file from a string
+   * @returns true if the file was successfully written
+   * @param path - the filesystem-depedent path to save the file to
+   * @param text - the content top save to a file
+   */
+  public static boolean writeFile (String path, String text) {
+    return writeFile (path, text, StandardCharsets.UTF_8);
   }
 }

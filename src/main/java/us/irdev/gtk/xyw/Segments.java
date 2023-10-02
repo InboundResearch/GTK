@@ -18,6 +18,14 @@ public class Segments {
     }
   }
 
+  public static Segments join (Segments a, Segments b) {
+    List<Segment> segments = new ArrayList<>(a.segments.size() + b.segments.size());
+    // XXX do we need to consider whether there are any duplicate segments?
+    segments.addAll(a.segments);
+    segments.addAll(b.segments);
+    return new Segments (segments);
+  }
+
   public static List<Segment> clipToLine (List<Segment> segments, Line line, int... keeps) {
     List<Segment> result = new ArrayList<> ();
     if (segments != null) {
@@ -45,10 +53,10 @@ public class Segments {
   }
 
   public static List<Segment> clipToDomain (List<Segment> segments, Domain domain) {
-    segments = clipToLine(segments, Line.horizontal(domain.top()), (domain.top() > 0) ? Line.Classification.FRONT : Line.Classification.BACK, Line.Classification.ON);
-    segments = clipToLine(segments, Line.horizontal(domain.bottom()), (domain.bottom() > 0) ? Line.Classification.BACK : Line.Classification.FRONT, Line.Classification.ON);
-    segments = clipToLine(segments, Line.vertical(domain.left()), (domain.left() > 0) ? Line.Classification.BACK : Line.Classification.FRONT, Line.Classification.ON);
-    segments = clipToLine(segments, Line.vertical(domain.right()), (domain.right() > 0) ? Line.Classification.FRONT : Line.Classification.BACK, Line.Classification.ON);
+    segments = clipToLine(segments, Line.horizontalLeft (domain.top()), Line.Classification.BACK, Line.Classification.ON);
+    segments = clipToLine(segments, Line.horizontalRight (domain.bottom()), Line.Classification.BACK, Line.Classification.ON);
+    segments = clipToLine(segments, Line.verticalDown (domain.left()), Line.Classification.BACK, Line.Classification.ON);
+    segments = clipToLine(segments, Line.verticalUp (domain.right()), Line.Classification.BACK, Line.Classification.ON);
     return (segments.size() > 0) ? segments : null;
   }
 
@@ -57,28 +65,29 @@ public class Segments {
     return (result !=null) ? new Segments (result) : null;
   }
 
-  public static List<Tuple> intersect(Segments a, Segments b) {
-    List<Tuple> result = new ArrayList<>();
-
-    // loop until the stopping criterion are reached
-    int counter = 0;
-    while (true) {
-      if ((a.length == 1) && (b.length == 1)) {
-        break;
+  public static List<Segment> trimToDomain (List<Segment> segments, Domain domain) {
+    List<Segment> result = new ArrayList<>();
+    for (Segment segment: segments) {
+      if (domain.contains(segment)) {
+        result.add(segment);
       }
-      Domain domain = Domain.intersection (a.domain, b.domain).scale(1.05);
-      if (domain.valid()) {
-          a = a.clipToDomain (domain);
-          b = b.clipToDomain (domain);
-      } else {
-        break;
-      }
-      ++counter;
     }
+    return (result.size() > 0) ? result : null;
+  }
 
-    // the result should be a pair of reduced-size lists of m and n segments, which we test
-    // accordingly
+  public Segments trimToDomain (Domain domain) {
+    List<Segment> result = trimToDomain (segments, domain);
+    return (result !=null) ? new Segments (result) : null;
+  }
 
-    return result;
+  public List<Segments> partition () {
+    int segmentsSize = segments.size();
+    int partitionSize = Math.max (1, (int) Math.sqrt (segmentsSize));
+    int partitionCount = (segmentsSize / partitionSize) + (((segmentsSize % partitionSize) > 0) ? 1 : 0);
+    List<Segments> output = new ArrayList<>(partitionCount);
+    for (int i = 0, start = 0; i < partitionCount; ++i, start += partitionSize) {
+      output.add (new Segments (segments.subList (start, Math.min (start + partitionSize, segmentsSize - 1))));
+    }
+    return output;
   }
 }

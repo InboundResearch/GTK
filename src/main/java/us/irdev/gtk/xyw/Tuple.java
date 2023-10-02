@@ -123,6 +123,7 @@ public class Tuple {
   }
 
   public static Tuple PT (Tuple xy) {
+    // you probably don't mean to truncate an unprojected tuple
     assert(Numerics.similar (0, xy.w) || Numerics.similar (1, xy.w));
     return new Tuple (xy.x, xy.y, 1);
   }
@@ -140,8 +141,9 @@ public class Tuple {
   }
 
   public static Tuple VEC (Tuple xy) {
+    // you probably don't mean to truncate an unprojected tuple
     assert(Numerics.similar (0, xy.w) || Numerics.similar (1, xy.w));
-    return new Tuple (xy.x, xy.y, 1);
+    return new Tuple (xy.x, xy.y, 0);
   }
 
   public boolean isVec() {
@@ -149,7 +151,8 @@ public class Tuple {
   }
 
   public Tuple perpendicular() {
+    // make sure this is a vector (not a point or unprojected point)
     assert (isVec());
-    return new Tuple (y, -x, 0);
+    return VEC (y, -x);
   }
 }

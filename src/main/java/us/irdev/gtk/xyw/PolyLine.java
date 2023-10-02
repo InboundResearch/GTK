@@ -22,6 +22,10 @@ public class PolyLine {
     return points;
   }
 
+  public Domain domain () {
+    return new Domain (points);
+  }
+
   public boolean isClosed () {
     return closed;
   }
