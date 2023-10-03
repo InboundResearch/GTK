@@ -1,22 +1,22 @@
 package us.irdev.gtk.xyw.db;
 
+import org.junit.jupiter.api.Test;
 import us.irdev.gtk.xyw.Domain;
 import us.irdev.gtk.xyw.Tuple;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.Tuple.VEC;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RowsTest {
   @Test
   public void testFillConstant() {
-    Domain domain = new Domain (-180, 175, -90, 90);
+    var domain = new  Domain (-180, 175, -90, 90);
     Tuple size = domain.size();
-    Tuple interval = PT (5, 5);
+    var interval = PT (5, 5);
     Rows db = Rows.fromFill(domain, interval, xy -> 36.5);
 
     List<Row> rows = db.getRows();
@@ -33,9 +33,9 @@ public class RowsTest {
 
   @Test
   public void testFillVariesWithY() {
-    Domain domain = new Domain (-180, 175, -90, 90);
+    var domain = new  Domain (-180, 175, -90, 90);
     Tuple size = domain.size();
-    Tuple interval = VEC (5, 5);
+    var interval = VEC (5, 5);
     Rows db = Rows.fromFill(domain, interval, xy -> xy.y * 0.9);
 
     List<Row> rows = db.getRows();
@@ -52,9 +52,9 @@ public class RowsTest {
 
   @Test
   public void testFillVariesWithXY() {
-    Domain domain = new Domain (-180, 175, -90, 90);
+    var domain = new  Domain (-180, 175, -90, 90);
     Tuple size = domain.size();
-    Tuple interval = VEC (5, 5);
+    var interval = VEC (5, 5);
     Rows db = Rows.fromFill(domain, interval, xy -> (xy.y * 0.9) + (((1 + Math.cos(Math.toRadians(xy.x))) * 0.5) * xy.y * 0.05));
 
     List<Row> rows = db.getRows();

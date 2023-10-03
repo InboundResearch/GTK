@@ -2,15 +2,15 @@ package us.irdev.gtk.xyw;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class LineTest {
 
   @Test
   public void testLineConstructors() {
-    Line line = new Line (0.0, 1.0, 0.0);
+    var line = new  Line (0.0, 1.0, 0.0);
     assertSimilar (new Tuple (0, 1, 0), line.abc);
     assertSimilar (0.0, line.c());
     assertSimilar(0.0, line.m());

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BoundaryBehaviorTest {
   @Test
   public void testBoundaryBehaviorNone () {
-    BoundaryBehavior bb = new BoundaryBehaviorValue ();
+    var bb = new BoundaryBehaviorValue ();
 
     assertEquals(0, bb.adjustDomainMax(0, 0, 1));
 
@@ -19,7 +19,7 @@ public class BoundaryBehaviorTest {
 
   @Test
   public void testBoundaryBehaviorClamp () {
-    BoundaryBehavior bb = new BoundaryBehaviorClamp ();
+    var bb = new BoundaryBehaviorClamp ();
 
     assertEquals(0, bb.adjustDomainMax(0, 1, 1));
 
@@ -37,7 +37,7 @@ public class BoundaryBehaviorTest {
 
   @Test
   public void testBoundaryBehaviorWrap () {
-    BoundaryBehavior bb = new BoundaryBehaviorWrap ();
+    var bb = new BoundaryBehaviorWrap ();
 
     assertEquals(1, bb.adjustDomainMax(0, 1, 1));
     assertEquals(2, bb.adjustDomainMax(0, 6, 2));
@@ -90,7 +90,7 @@ public class BoundaryBehaviorTest {
 
   @Test
   public void testBoundaryBehaviorAccordion () {
-    BoundaryBehavior bb = new BoundaryBehaviorAccordion ();
+    var bb = new BoundaryBehaviorAccordion ();
 
     assertEquals(0, bb.adjustDomainMax(0, 1, 1));
 

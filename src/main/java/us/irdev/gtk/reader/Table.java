@@ -19,7 +19,7 @@ public class Table {
   }
 
   public List<Map<String, String>> readTable () {
-    List<List<String>> array = formatReader.readArray();
+    var array = formatReader.readArray();
 
     // gather the strings for the titles, if we don't already have them, the first data row in the
     // read file is it...
@@ -32,12 +32,12 @@ public class Table {
     }
 
     // convert the array to a database format, only if the field has value
-    List<Map<String, String>> result = new ArrayList<> ();
+    var result = new ArrayList<Map<String, String>> ();
     for (List<String> record: array) {
-      Map<String, String> map = new HashMap<> ();
+      var map = new HashMap<String, String> ();
       for (int i = 0, end = titles.length; i < end; ++i) {
         if (i < record.size ()) {
-          String entry = record.get (i);
+          var entry = record.get (i);
           if (entry != null) {
             map.put (titles[i], entry);
           }

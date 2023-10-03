@@ -2,11 +2,11 @@ package us.irdev.gtk.xyw;
 
 import org.junit.jupiter.api.Test;
 
+import static java.lang.Math.sqrt;
+import static org.junit.jupiter.api.Assertions.*;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.Tuple.VEC;
-import static java.lang.Math.sqrt;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SegmentTest {
 
@@ -24,9 +24,9 @@ public class SegmentTest {
 
   @Test
   public void testIntersection() {
-    Segment segment = new Segment (PT (2, 0), PT (0, 2));
-    Segment ray = new Segment (PT (0, 0), PT (2, 2));
-    Tuple pt = Segment.intersect (ray, segment);
+    var segment = new  Segment (PT (2, 0), PT (0, 2));
+    var ray = new  Segment (PT (0, 0), PT (2, 2));
+    var pt = Segment.intersect (ray, segment);
     assertSimilar (PT (1, 1), pt);
     assertTrue(segment.pointIsInSegment (pt));
     assertTrue(ray.pointIsInSegment (pt));
@@ -34,11 +34,11 @@ public class SegmentTest {
 
   @Test
   public void testLineEquation() {
-    Tuple a = PT (0, 2);
-    Tuple b = PT (1, 1);
+    var a = PT (0, 2);
+    var b = PT (1, 1);
 
-    Segment segment = new Segment (a, b);
-    Tuple origin = segment.line.origin();
+    var segment = new  Segment (a, b);
+    var origin = segment.line.origin();
     assertTrue(segment.pointIsInSegment (origin));
 
     assertSimilar (VEC (-1, -1).normalized (), segment.line.n());

@@ -5,24 +5,20 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.TupleCargo.TC;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SegmentsTest {
-
   private Segment clipToDomain(Domain domain, Segment segment) {
-    List<Segment> segments = new ArrayList<>(1);
-    segments.add(segment);
-    segments = Segments.clipToDomain (segments, domain);
+    var segments = Segments.clipToDomain (List.of(segment), domain);
     return (segments != null) ? segments.get(0) : null;
   }
 
   @Test
   public void testClip() {
-    Domain domain = new Domain (1, 3, 1, 3);
+    var domain = new  Domain (1, 3, 1, 3);
 
     // all outside
     assertNull(clipToDomain(domain, new Segment(PT (0, 0), PT (0.5, 0.5))));
@@ -49,36 +45,33 @@ public class SegmentsTest {
     assertSimilar(new Segment (PT (1, 1.625),PT (3, 2.125)), clipToDomain(domain, new Segment (PT (0.5, 1.5),PT (4.5, 2.5))));
   }
 
-  interface TupleFunc {
-    Tuple value(double x);
-  }
-
   public static Segments makeSegments (double low, double high, double step, TupleFunc tupleFunc) {
     // generate a bunch of points in the tuplefunc
-    List<Tuple> points = new ArrayList<>();
-    int steps = (int) Math.round (((high - low) / step)) + 1;
+    var points = new  ArrayList<Tuple>();
+    var steps = (int) Math.round (((high - low) / step)) + 1;
     assert (steps > 1);
-    for (int i = 0; i < steps; ++i) {
-      double x = low + (i * step);
-      TupleCargo tpc = TC(tupleFunc.value(x)).put("x", x);
+    for (var i = 0; i < steps; ++i) {
+      var x = low + (i * step);
+      var tpc = TC(tupleFunc.value(x)).put("x", x);
       points.add (tpc);
     }
 
     // make a list of segments from the points
-    int segmentListSize = points.size() - 1;
-    List<Segment> segments = new ArrayList<>(segmentListSize);
-    for (int i = 0; i < segmentListSize; ++i) {
+    var segmentListSize = points.size() - 1;
+    var segments = new  ArrayList<Segment>(segmentListSize);
+    for (var i = 0; i < segmentListSize; ++i) {
       segments.add (new Segment (points.get(i), points.get (i + 1)));
     }
 
     // return the result
-    return (segments.size() > 0) ? new Segments (segments) : null;
+    return (!segments.isEmpty()) ? new Segments (segments) : null;
   }
 
   @Test
   public void testBounds() {
     // generate a bunch of points in a sinusoidal line
-    Segments segments = makeSegments (-10, 10, 0.1, x -> PT(x, Math.sin (x * Math.PI) * 2));
+    var segments = makeSegments (-10, 10, 0.1, x -> PT(x, Math.sin (x * Math.PI) * 2));
+    assertNotNull(segments);
     assertEquals(200, segments.segments.size());
     assertSimilar(new Domain (-10, 10, -2, 2), segments.domain);
   }

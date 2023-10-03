@@ -74,7 +74,7 @@ public class SampledFunction {
    */
   public static SampledFunction fromDatabase (Rows rows, BoundaryBehavior bbX, BoundaryBehavior bbY) {
     // set up the sampled function
-    SampledFunction function = new SampledFunction (rows.getDomain(), rows.getInterval (), bbX, bbY);
+    var function = new SampledFunction (rows.getDomain(), rows.getInterval (), bbX, bbY);
 
     // loop over the input database to put the samples
     for (Row row : rows.getRows()) {
@@ -160,7 +160,7 @@ public class SampledFunction {
    */
   public At f (Tuple xy) {
     // condition the input coordinate
-    Tuple cxy = PT (bbX.condition(xy.x, domain.min.x, domain.max.x), bbY.condition(xy.y, domain.min.y, domain.max.y));
+    var cxy = PT (bbX.condition(xy.x, domain.min.x, domain.max.x), bbY.condition(xy.y, domain.min.y, domain.max.y));
 
     // map the input coordinate to 4 sampled locations [(x0, y0), (x1, y0), (x0, y1), (x1, y1)] in
     // the sample array space[[0..dimX),[0..dimY)], and compute the interpolators, which should be
@@ -257,7 +257,7 @@ public class SampledFunction {
     // the form of a set of line segments. our sampled data has different boundary behaviors that
     // complicate things, so this is not the most efficient variant in the sense that a lot of
     // redundant calculations are not re-used as they would be in the traditional implementation.
-    List<Segment> output = new ArrayList<>();
+    var output = new ArrayList<Segment>();
 
     Tuple size = domain.size ();
     Tuple end = size.hquotient (interval).floor ();
@@ -288,52 +288,52 @@ public class SampledFunction {
             break;
           case 1: case 14: {
             // bottom left corner is different, bottom and left have endpoints
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
+            var left = PT (x, Numerics.where(targetValue, y, a, y1, c));
+            var bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
             output.add (new Segment (left, bottom));
           } break;
           case 2: case 13: {
             // bottom right corner is different, bottom and right have endpoints
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
+            var right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            var bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
             output.add (new Segment (right, bottom));
           } break;
           case 4: case 11: {
             // top left corner is different, top and left have endpoints
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            var left = PT (x, Numerics.where(targetValue, y, a, y1, c));
+            var top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
             output.add (new Segment (left, top));
           } break;
           case 8: case 7: {
             // top right corner is different, top and right have endpoints
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            var top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            var right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
             output.add (new Segment (right, top));
           } break;
           case 3: case 12: {
             // two bottom corners are different from the two top corners, left and right have endpoints
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            var left = PT (x, Numerics.where(targetValue, y, a, y1, c));
+            var right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
             output.add (new Segment (left, right));
           } break;
           case 5: case 10: {
             // two left corners are different from the two right corners, bottom and top have endpoints
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            var bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
+            var top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
             output.add (new Segment (bottom, top));
           } break;
           case 6: case 9: {
             // saddle point, all 4 edges have endpoints. we have to decide which direction to do 2 lines.
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            var left = PT (x, Numerics.where(targetValue, y, a, y1, c));
+            var right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            var bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
+            var top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
 
             // a good heuristic to resolve the ambiguity here is to choose the shortest combined pair
-            Segment leftTop = new Segment (left, top);
-            Segment leftBottom = new Segment (left, bottom);
-            Segment rightTop = new Segment (right, top);
-            Segment rightBottom = new Segment (right, bottom);
+            var leftTop = new  Segment (left, top);
+            var leftBottom = new  Segment (left, bottom);
+            var rightTop = new  Segment (right, top);
+            var rightBottom = new  Segment (right, bottom);
 
             if ((leftTop.lengthSq() + rightBottom.lengthSq()) < (leftBottom.lengthSq() + rightTop.lengthSq())) {
               output.add (leftTop);
@@ -455,7 +455,7 @@ public class SampledFunction {
    *
    */
   public List<Segment> refineSegments (List<Segment> segments, double targetValue, double maxSegmentLength) {
-    List<Segment> output = new ArrayList<>();
+    var output = new ArrayList<Segment>();
     for (Segment segment: segments) {
       refineSegment(segment, targetValue, maxSegmentLength, output);
     }
@@ -562,7 +562,7 @@ public class SampledFunction {
    * @return a list of the roots found, or null if none are found
    */
   public List<Crossing> findCrossings(TupleFunctionAt tfa, double xa, double xb, double targetValue, int crossings) {
-    List<Crossing> output = new ArrayList<>();
+    var output = new ArrayList<Crossing>();
 
     // divide the search range into smaller parts based on the crossings hint, loop over each subsegment separately
     double delta = xb - xa;

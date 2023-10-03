@@ -14,7 +14,7 @@ public class TableTest {
   public void testFormatReaderDelimited () {
     String input = Utility.slurpFile ("data/sample.csv", StandardCharsets.UTF_8);
     assertNotEquals(null, input);
-    Table tableReader = new Table (input, ',', '#');
+    var tableReader = new  Table (input, ',', '#');
     List<Map<String, String>> table = tableReader.readTable ();
 
     // make sure the test has the right number of lines (accounting for comments, etc.)

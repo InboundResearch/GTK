@@ -2,23 +2,23 @@ package us.irdev.gtk.xyw;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.Tuple.VEC;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DomainTest {
 
   @Test
   public void testConstructor() {
-    Domain domain = new Domain ();
+    var domain = new  Domain ();
     assertEquals(domain.min, PT (Double.MAX_VALUE, Double.MAX_VALUE));
     assertEquals(domain.max, PT (-Double.MAX_VALUE, -Double.MAX_VALUE));
   }
 
   @Test
   public void testSimilar () {
-    Domain domain = new Domain ().add(PT (1, 1));
+    var domain = new  Domain ().add(PT (1, 1));
     assertSimilar(PT (1, 1), domain.min);
     assertSimilar(PT (1, 1), domain.max);
 
@@ -26,14 +26,14 @@ public class DomainTest {
     assertSimilar(PT (0, 0), domain.min);
     assertSimilar(PT (1, 1), domain.max);
 
-    Domain domain2 = new Domain ().add(PT (1.1, 1.1));
+    var domain2 = new  Domain ().add(PT (1.1, 1.1));
     domain2.add (PT (-0.1, -0.1));
     assertSimilar(new Domain (-0.1, 1.1, -0.1, 1.1), domain2);
   }
 
   @Test
   public void testAdd() {
-    Domain domain = new Domain ().add(PT (1, 1));
+    var domain = new  Domain ().add(PT (1, 1));
     assertEquals(domain.min, PT (1, 1));
     assertEquals(domain.max, PT (1, 1));
 
@@ -48,7 +48,7 @@ public class DomainTest {
 
   @Test
   public void testBounds() {
-    Domain domain = new Domain ()
+    var domain = new  Domain ()
             .add (PT (2.5, 3.5))
             .add (PT (0.5, 0.5));
 
@@ -75,7 +75,7 @@ public class DomainTest {
 
   @Test
   public void testScale() {
-    Domain domain = new Domain ()
+    var domain = new  Domain ()
             .add (Tuple.ORIGIN)
             .add (PT (1.0, 1.0));
     assertSimilar (new Domain (-1, 2, -1, 2), domain.scale (3));
@@ -84,9 +84,9 @@ public class DomainTest {
 
   @Test
   public void testSetOps() {
-    Domain da = new Domain (0, 1, 0, 1),
-           db = new Domain (0.5, 1.5, 0.5, 1.5),
-           dc = new Domain (5, 6, 5, 6);
+    var da = new  Domain (0, 1, 0, 1);
+    var db = new Domain (0.5, 1.5, 0.5, 1.5);
+    var dc = new Domain (5, 6, 5, 6);
     assertSimilar (new Domain (0.5, 1, 0.5, 1), Domain.intersection(da, db));
     assertSimilar (da, Domain.intersection(da, da));
     assertSimilar (new Domain (0, 1.5, 0, 1.5), Domain.union(da, db));
@@ -107,7 +107,7 @@ public class DomainTest {
 
   @Test
   public void testContainsSegment () {
-    Domain domain = new Domain (1, 3, 1, 3);
+    var domain = new  Domain (1, 3, 1, 3);
 
     // trivial accept and reject
     testDomainContainsSegment (domain, PT (0, 0), PT (0.5, 0.5), false);

@@ -13,7 +13,7 @@ public class DelimitedTest {
   public void testDelimited () {
     String input = Utility.slurpFile ("data/sample.csv", StandardCharsets.UTF_8);
     assertNotEquals(null, input);
-    Delimited delimitedReader = new Delimited (input, ',', '#');
+    var delimitedReader = new  Delimited (input, ',', '#');
     List<List<String>> array = delimitedReader.readArray ();
 
     // make sure the test has the right number of lines (accounting for comments, etc.)
