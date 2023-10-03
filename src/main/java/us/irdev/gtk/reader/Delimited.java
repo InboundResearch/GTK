@@ -27,7 +27,7 @@ public class Delimited extends Parsed {
   }
 
   private String readEntry() {
-    String entry = readString(QUOTED_STRING_STOP_CHARS);
+    var entry = readString(QUOTED_STRING_STOP_CHARS);
     return (entry != null) ? entry : readBareValueUntil (bareValueStopChars);
   }
 
@@ -40,7 +40,7 @@ public class Delimited extends Parsed {
 
     // marker is at the beginning of a line
     if (check ()) {
-      List<String> line = new ArrayList<>();
+      var line = new ArrayList<String>();
       do {
         line.add (readEntry ());
       } while (expect(delimiter));
@@ -51,7 +51,7 @@ public class Delimited extends Parsed {
   }
 
   public List<List<String>> readArray () {
-    List<List<String>> array = new ArrayList<>();
+    var array = new ArrayList<List<String>>();
     List<String> line;
     while ((line = readLine()) != null) {
       array.add (line);

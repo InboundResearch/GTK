@@ -92,7 +92,7 @@ public class Rows {
     if (! yValues.contains (y)) {
       // add the row
       for (Double x : xValues) {
-        Tuple xy = PT (x, y);
+        var xy = PT (x, y);
         domain.add(xy);
         rows.add (new Row (xy, value));
       }
@@ -103,7 +103,7 @@ public class Rows {
     if (! xValues.contains (x)) {
       // add the row
       for (Double y : yValues) {
-        Tuple xy = PT (x, y);
+        var xy = PT (x, y);
         domain.add(xy);
         rows.add (new Row (xy, value));
       }
@@ -127,10 +127,10 @@ public class Rows {
    * @return a Database with the samples for a function
    */
   public static Rows fromFill(Domain domain, Tuple interval, DatabaseFill fill) {
-    List<Row> rows = new ArrayList<> ();
+    var rows = new ArrayList<Row> ();
     for (double y = domain.min.y; y <= domain.max.y; y += interval.y) {
       for (double x = domain.min.x; x <= domain.max.x; x += interval.x) {
-        Tuple xy = PT (x, y);
+        var xy = PT (x, y);
         rows.add (new Row (xy, fill.at (xy)));
       }
     }
@@ -144,7 +144,7 @@ public class Rows {
    * @return a string with the database in the same CSV format we read from a table
    */
   public String toString(String xName, String yName, String valueName) {
-    StringBuilder sb = new StringBuilder ();
+    var sb = new  StringBuilder ();
     sb.append("# comment line with date in standard format goes here").append(System.lineSeparator());
     sb.append (xName).append(',').append(yName).append(',').append(valueName).append(System.lineSeparator());
     for (Row row: rows) {

@@ -84,7 +84,7 @@ public class Frame {
   }
 
   public String emitSvg(String title, int svgWidth) {
-    StringBuilder builder = new StringBuilder ();
+    var builder = new StringBuilder ();
 
     // get the domain of what we want to draw
     Domain domain = this.domain;
@@ -103,7 +103,7 @@ public class Frame {
     // compute the aspect ratio so we can size the svg element
     Tuple documentSize = documentDomain.size ();
     double aspectRatio = documentSize.y / documentSize.x;
-    int svgHeight = (int) (svgWidth * aspectRatio);
+    var svgHeight = (int) (svgWidth * aspectRatio);
 
     // emit the svg with domain, and a transform to draw the coordinate axis the right way up
     builder.append (String.format ("<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\"", svgWidth, svgHeight))
@@ -126,7 +126,7 @@ public class Frame {
   }
 
   public String emitHtml(String title, int svgWidth) {
-    StringBuilder builder = new StringBuilder ();
+    var builder = new StringBuilder ();
 
     // emit an html wrapper doc
     return new StringBuilder ()

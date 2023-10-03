@@ -8,7 +8,7 @@ public class Axis implements Element {
   @Override
   public String emit (Domain domain, Traits traits) {
     // emit gridlines using the current traits
-    StringBuilder builder = new StringBuilder();
+    var builder = new StringBuilder();
 
     // emit the vertical axis line
     builder.append (new Line (PT (0, domain.min.y), PT(0, domain.max.y)).emit (domain, traits));

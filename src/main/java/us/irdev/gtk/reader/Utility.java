@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
@@ -17,7 +16,7 @@ public class Utility {
    */
   public static String slurpFile (String path, Charset encoding) {
     try {
-      byte[] encoded = Files.readAllBytes(Paths.get(path));
+      var encoded = Files.readAllBytes(Paths.get(path));
       return new String(encoded, encoding);
     }
     catch (IOException ignored) {
@@ -44,9 +43,8 @@ public class Utility {
    */
   public static boolean writeFile (String path, String text, Charset encoding) {
     try {
-      Path targetPath = Paths.get (path);
-      byte[] bytes = text.getBytes (encoding);
-      Files.write (targetPath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+      var targetPath = Paths.get (path);
+      Files.writeString (targetPath, text, encoding, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
       return true;
     }
     catch (IOException ignored) {
