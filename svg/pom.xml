@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- GTK parent POM -->
+  <parent>
+    <groupId>us.irdev.gtk</groupId>
+    <artifactId>pom</artifactId>
+    <version>${gtk.version}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <!-- set out artifact name and our own version -->
+  <artifactId>svg</artifactId>
+  <name>SVG Output</name>
+  <description>Geometry Tool Kit (GTK) - SVG Output</description>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>xyw</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>io</artifactId>
+      <version>${gtk.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
