@@ -62,7 +62,7 @@ public class Line {
    * @return the line object constructed from a normal and offset
    */
   public static Line verticalUp (double x) {
-    return fromPointVector (Tuple.PT (x, 0), Tuple.VEC (0, 1));
+    return fromPointVector (PT(x, 0), Tuple.VEC (0, 1));
   }
 
   /**
@@ -70,7 +70,7 @@ public class Line {
    * @return the line object constructed from a normal and offset
    */
   public static Line verticalDown (double x) {
-    return fromPointVector (Tuple.PT (x, 0), Tuple.VEC (0, -1));
+    return fromPointVector (PT(x, 0), Tuple.VEC (0, -1));
   }
 
   /**
@@ -78,7 +78,7 @@ public class Line {
    * @return the line object constructed from a normal and offset
    */
   public static Line horizontalRight (double y) {
-    return fromPointVector (Tuple.PT (0, y), Tuple.VEC (1, 0));
+    return fromPointVector (PT(0, y), Tuple.VEC (1, 0));
   }
 
   /**
@@ -86,7 +86,7 @@ public class Line {
    * @return the line object constructed from a normal and offset
    */
   public static Line horizontalLeft (double y) {
-    return fromPointVector (Tuple.PT (0, y), Tuple.VEC (-1, 0));
+    return fromPointVector (PT(0, y), Tuple.VEC (-1, 0));
   }
 
   /**
@@ -109,7 +109,7 @@ public class Line {
   public static Line fromSlopeIntercept (double slope, double intercept) {
     return (slope == Double.POSITIVE_INFINITY) ? verticalUp(intercept) :
            (slope == Double.NEGATIVE_INFINITY) ? verticalDown(intercept) :
-            fromTwoPoints (Tuple.PT (-1, -slope + intercept), Tuple.PT (1, slope + intercept));
+            fromTwoPoints (PT(-1, -slope + intercept), PT(1, slope + intercept));
   }
 
   /**
@@ -133,7 +133,7 @@ public class Line {
    * @return the point on the line that is closest to the origin
    */
   public Tuple origin () {
-    return Tuple.PT (n().scale(-c()));
+    return PT(n().scale(-c()));
   }
 
   /**

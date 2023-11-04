@@ -22,7 +22,7 @@ public class Segment {
   }
 
   public Segment (double x1, double y1, double x2, double y2) {
-    this (Tuple.PT (x1, y1), Tuple.PT (x2, y2));
+    this (PT(x1, y1), PT(x2, y2));
   }
 
   public double lengthSq() {
@@ -45,7 +45,7 @@ public class Segment {
 
   public Tuple lerp(double i) {
     //return a.add(b.subtract(a).scale(i));
-    return Tuple.PT (Numerics.lerp(a.x, b.x, i), Numerics.lerp(a.y, b.y, i));
+    return PT(Numerics.lerp(a.x, b.x, i), Numerics.lerp(a.y, b.y, i));
   }
 
   /**

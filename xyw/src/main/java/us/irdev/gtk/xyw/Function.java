@@ -18,7 +18,7 @@ public abstract class Function implements Fxy {
    * @return the value of the function and the 1st derivatives at (x, y)
    */
   public At at (double x, double y) {
-    return at (Tuple.PT (x, y));
+    return at (PT(x, y));
   }
 
   /**
@@ -35,7 +35,7 @@ public abstract class Function implements Fxy {
    * @return the value of the function at (x, y)
    */
   public double f (double x, double y) {
-    return at (Tuple.PT (x, y)).f;
+    return at (PT(x, y)).f;
   }
 
   /**
@@ -52,6 +52,6 @@ public abstract class Function implements Fxy {
    * @return the 1st derivatives of the function at xy
    */
   public Tuple dxdy (double x, double y) {
-    return at (Tuple.PT (x, y)).dxdy;
+    return at (PT(x, y)).dxdy;
   }
 }

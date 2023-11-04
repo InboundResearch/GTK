@@ -1,16 +1,17 @@
 package us.irdev.gtk.xyw;
 
 import us.irdev.gtk.io.Utility;
+import org.junit.jupiter.api.Test;
 import us.irdev.gtk.svg.Axis;
 import us.irdev.gtk.svg.Frame;
 import us.irdev.gtk.svg.Traits;
-import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import static us.irdev.gtk.xyw.Tuple.PT;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SegmentsPairTest {
   private void drawSvg(String name, SegmentsPair segmentsPair, List<Tuple> points, List<SegmentsPair> pairs) {
@@ -20,11 +21,11 @@ public class SegmentsPairTest {
       domain = segmentsPair.domain.scale (1.2);
     } else if( pairs != null) {
       domain = new Domain ();
-      for (SegmentsPair pair: pairs) {
+      for (var pair: pairs) {
         domain = Domain.union (domain, pair.domain);
       }
     }
-    Frame frame = new Frame (domain)
+    var frame = new  Frame (domain)
             .begin (new Traits (0.1, "#888", "none"))
             .element(new Axis ());
     if (segmentsPair != null) {
@@ -49,30 +50,30 @@ public class SegmentsPairTest {
                 .poly (pair.b);
       }
     }
-    String svg = frame.emitSvg(name, 800);
+    var svg = frame.emitSvg(name, 800);
     Utility.writeFile(Paths.get("output", name + ".svg").toString(), svg);
   }
 
   private SegmentsPair rawPathological () {
     final double stepSize = 0.005;
-    Segments a = Segments.fromTupleFunction (1, 12, stepSize, x -> Tuple.PT(1.0 + (Math.cos(x * 2 * Math.PI) * x), 0.5 + (Math.sin(x * 2 * Math.PI) * x)));
-    Segments b = Segments.fromTupleFunction (1, 5, stepSize, x -> Tuple.PT(-4.5 + (Math.cos(x * 2 * Math.PI) * x), -3.0 + (Math.sin(x * 2 * Math.PI) * x)));
+    Segments a = Segments.fromTupleFunction (1, 12, stepSize, x -> PT(1.0 + (Math.cos(x * 2 * Math.PI) * x), 0.5 + (Math.sin(x * 2 * Math.PI) * x)));
+    Segments b = Segments.fromTupleFunction (1, 5, stepSize, x -> PT(-4.5 + (Math.cos(x * 2 * Math.PI) * x), -3.0 + (Math.sin(x * 2 * Math.PI) * x)));
     return new SegmentsPair(a, b);
   }
 
   @Test
   public void testPartition() {
-    SegmentsPair raw = rawPathological();
+    var raw = rawPathological();
     drawSvg("pathologicalCase-raw", raw, null, null);
 
-    SegmentsPair reduced = raw.reduce();
+    var reduced = raw.reduce();
     drawSvg("pathologicalCase-reduced", reduced, null, null);
 
-    List<SegmentsPair> boundedIntersections = reduced.partition ();
+    var boundedIntersections = reduced.partition ();
     assertNotNull(boundedIntersections);
     drawSvg("pathologicalCase-partitioned", reduced, null, boundedIntersections);
 
-    List<Tuple> intersections = SegmentsPair.intersections (boundedIntersections);
+    var intersections = SegmentsPair.intersections (boundedIntersections);
     drawSvg("pathologicalCase-intersections", raw, intersections, null);
   }
 }

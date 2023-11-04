@@ -12,8 +12,8 @@ public class SegmentsPairTest {
   @Test
   public void testReduce() {
     // generate a bunch of points in a sinusoidal line
-    Segments a = Segments.fromTupleFunction (-10, 10, 0.1, x -> Tuple.PT(x, x * 0.1));
-    Segments b = Segments.fromTupleFunction (-10, 10, 0.1, x -> Tuple.PT(x * 0.1, x + 2));
+    Segments a = Segments.fromTupleFunction (-10, 10, 0.1, x -> PT(x, x * 0.1));
+    Segments b = Segments.fromTupleFunction (-10, 10, 0.1, x -> PT(x * 0.1, x + 2));
 
     // precompute a line intersection for comparison
     Tuple testPoint = Line.intersect (
@@ -31,8 +31,8 @@ public class SegmentsPairTest {
 
   private SegmentsPair rawPathological () {
     final double stepSize = 0.005;
-    Segments a = Segments.fromTupleFunction (1, 12, stepSize, x -> Tuple.PT(1.0 + (Math.cos(x * 2 * Math.PI) * x), 0.5 + (Math.sin(x * 2 * Math.PI) * x)));
-    Segments b = Segments.fromTupleFunction (1, 5, stepSize, x -> Tuple.PT(-4.5 + (Math.cos(x * 2 * Math.PI) * x), -3.0 + (Math.sin(x * 2 * Math.PI) * x)));
+    Segments a = Segments.fromTupleFunction (1, 12, stepSize, x -> PT(1.0 + (Math.cos(x * 2 * Math.PI) * x), 0.5 + (Math.sin(x * 2 * Math.PI) * x)));
+    Segments b = Segments.fromTupleFunction (1, 5, stepSize, x -> PT(-4.5 + (Math.cos(x * 2 * Math.PI) * x), -3.0 + (Math.sin(x * 2 * Math.PI) * x)));
     return new SegmentsPair(a, b);
   }
 

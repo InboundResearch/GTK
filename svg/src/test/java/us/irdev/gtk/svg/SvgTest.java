@@ -1,8 +1,8 @@
 package us.irdev.gtk.svg;
 
+import org.junit.jupiter.api.Test;
 import us.irdev.gtk.io.Utility;
 import us.irdev.gtk.xyw.Domain;
-import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 
@@ -11,7 +11,7 @@ import static us.irdev.gtk.xyw.Tuple.PT;
 public class SvgTest {
   @Test
   public void testSvg() {
-    Frame frame = new Frame (new Domain (-180, 180, -90, 90))
+    var frame = new  Frame (new Domain (-180, 180, -90, 90))
             .begin(new Traits (0.1, "#aaa", "none"))
             .element (new Grid (8, 4))
             .end()
