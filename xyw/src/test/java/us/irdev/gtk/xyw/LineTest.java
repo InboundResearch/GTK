@@ -2,56 +2,57 @@ package us.irdev.gtk.xyw;
 
 import org.junit.jupiter.api.Test;
 
-import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static org.junit.jupiter.api.Assertions.*;
+import static us.irdev.gtk.xyw.Helper.assertSimilar;
+import static us.irdev.gtk.xyw.Tuple.*;
 
 public class LineTest {
 
   @Test
   public void testLineConstructors() {
-    Line line = new Line (0.0, 1.0, 0.0);
+    var line = new  Line (0.0, 1.0, 0.0);
     assertSimilar (new Tuple (0, 1, 0), line.abc);
     assertSimilar (0.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(0.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 0));
+    assertSimilar(line.origin(), PT(0, 0));
 
     line = new Line (0.0, -1.0, 2.0);
     assertSimilar (new Tuple (0, -1, 2.0), line.abc);
     assertSimilar (2.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(2.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 2));
+    assertSimilar(line.origin(), PT(0, 2));
 
     // verify the line from two points
-    line = Line.fromTwoPoints (Tuple.PT (0, 2), Tuple.PT (1, 2));
+    line = Line.fromTwoPoints (PT(0, 2), PT(1, 2));
     assertSimilar (new Tuple (0, -1, 2.0), line.abc);
     assertSimilar (2.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(2.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 2));
+    assertSimilar(line.origin(), PT(0, 2));
 
-    line = Line.fromTwoPoints (Tuple.PT (1, 2), Tuple.PT (0, 2));
+    line = Line.fromTwoPoints (PT(1, 2), PT(0, 2));
     assertSimilar (new Tuple(0, 1, -2.0), line.abc);
     assertSimilar (-2.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(2.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 2));
+    assertSimilar(line.origin(), PT(0, 2));
 
     // verify the line from a point and direction
-    line = Line.fromPointVector (Tuple.PT (0, 2), Tuple.VEC (1, 0));
+    line = Line.fromPointVector (PT(0, 2), Tuple.VEC (1, 0));
     assertSimilar (new Tuple (0, -1, 2.0), line.abc);
     assertSimilar (2.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(2.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 2));
+    assertSimilar(line.origin(), PT(0, 2));
 
-    line = Line.fromPointVector (Tuple.PT (1, 2), Tuple.VEC (-1, 0));
+    line = Line.fromPointVector (PT(1, 2), Tuple.VEC (-1, 0));
     assertSimilar (new Tuple (0, 1, -2.0), line.abc);
     assertSimilar (-2.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(2.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 2));
+    assertSimilar(line.origin(), PT(0, 2));
 
     // test the slope/intercept form
     line = Line.fromSlopeIntercept (0.0, 2);
@@ -59,7 +60,7 @@ public class LineTest {
     assertSimilar (2.0, line.c());
     assertSimilar(0.0, line.m());
     assertSimilar(2.0, line.b());
-    assertSimilar(line.origin(), Tuple.PT (0, 2));
+    assertSimilar(line.origin(), PT(0, 2));
 
     line = Line.fromSlopeIntercept (0.5, 2);
     assertSimilar(0.5, line.m());
@@ -74,7 +75,7 @@ public class LineTest {
     line = Line.fromSlopeIntercept(Double.POSITIVE_INFINITY, 3);
     assertSimilar (new Tuple (1, 0, -3.0), line.abc);
     assertSimilar (-3.0, line.c());
-    assertSimilar (Tuple.PT (3, 0), line.origin());
+    assertSimilar (PT(3, 0), line.origin());
     assertEquals(Double.POSITIVE_INFINITY, line.m());
     assertSimilar(3.0, line.b());
 
@@ -83,7 +84,7 @@ public class LineTest {
     assertSimilar(3.0, line.b());
     assertSimilar (new Tuple (-1, 0, 3.0), line.abc);
     assertSimilar (3.0, line.c());
-    assertSimilar (Tuple.PT (3, 0), line.origin());
+    assertSimilar (PT(3, 0), line.origin());
 
     // test horizontal and perpendicular
     line = Line.verticalUp (3.0);
@@ -91,28 +92,28 @@ public class LineTest {
     assertSimilar(3.0, line.b());
     assertSimilar (new Tuple (1, 0, -3.0), line.abc);
     assertSimilar (-3.0, line.c());
-    assertSimilar (Tuple.PT (3, 0), line.origin());
+    assertSimilar (PT(3, 0), line.origin());
 
     line = Line.verticalUp (-3.0);
     assertEquals(Double.POSITIVE_INFINITY, line.m());
     assertSimilar(-3.0, line.b());
     assertSimilar (new Tuple (1, 0, 3.0), line.abc);
     assertSimilar (3.0, line.c());
-    assertSimilar (Tuple.PT (-3, 0), line.origin());
+    assertSimilar (PT(-3, 0), line.origin());
 
     line = Line.horizontalRight (3.0);
     assertSimilar(0.0, line.m());
     assertSimilar(3.0, line.b());
     assertSimilar (new Tuple (0, -1, 3.0), line.abc);
     assertSimilar (3.0, line.c());
-    assertSimilar (Tuple.PT (0, 3), line.origin());
+    assertSimilar (PT(0, 3), line.origin());
 
     line = Line.horizontalRight (-3.0);
     assertSimilar(0.0, line.m());
     assertSimilar(-3.0, line.b());
     assertSimilar (new Tuple (0, -1, -3.0), line.abc);
     assertSimilar (-3.0, line.c());
-    assertSimilar (Tuple.PT (0, -3), line.origin());
+    assertSimilar (PT(0, -3), line.origin());
   }
 
   @Test
@@ -128,11 +129,11 @@ public class LineTest {
 
     // test easy intersection
     l2 = Line.fromSlopeIntercept(-0.5, 1.0);
-    assertSimilar (Tuple.PT (0.0, 1.0), Line.intersect (l1, l2));
+    assertSimilar (PT(0.0, 1.0), Line.intersect (l1, l2));
 
     // test harder intersection
     l2 = Line.fromSlopeIntercept(-0.5, 2.0);
-    assertSimilar (Tuple.PT (1.0, 1.5), Line.intersect (l1, l2));
+    assertSimilar (PT(1.0, 1.5), Line.intersect (l1, l2));
   }
 
   @Test
@@ -144,13 +145,13 @@ public class LineTest {
     assertSimilar(c, line.distanceToPoint (Tuple.ORIGIN));
 
     line = Line.verticalUp (5.0);
-    assertEquals(Line.Classification.BACK, line.classifyPoint (Tuple.PT (4.0, 1.0)));
-    assertEquals(Line.Classification.ON, line.classifyPoint (Tuple.PT (5.0, 1.0)));
-    assertEquals(Line.Classification.FRONT, line.classifyPoint (Tuple.PT (6.0, 1.0)));
+    assertEquals(Line.Classification.BACK, line.classifyPoint (PT(4.0, 1.0)));
+    assertEquals(Line.Classification.ON, line.classifyPoint (PT(5.0, 1.0)));
+    assertEquals(Line.Classification.FRONT, line.classifyPoint (PT(6.0, 1.0)));
 
     line = Line.verticalUp (-5.0);
-    assertEquals(Line.Classification.FRONT, line.classifyPoint (Tuple.PT (-4.0, 1.0)));
-    assertEquals(Line.Classification.ON, line.classifyPoint (Tuple.PT (-5.0, 1.0)));
-    assertEquals(Line.Classification.BACK, line.classifyPoint (Tuple.PT (-6.0, 1.0)));
+    assertEquals(Line.Classification.FRONT, line.classifyPoint (PT(-4.0, 1.0)));
+    assertEquals(Line.Classification.ON, line.classifyPoint (PT(-5.0, 1.0)));
+    assertEquals(Line.Classification.BACK, line.classifyPoint (PT(-6.0, 1.0)));
   }
 }

@@ -19,7 +19,7 @@ public class Bundle {
   }
 
   public String emit(Domain domain) {
-    StringBuilder builder = new StringBuilder();
+    var builder = new StringBuilder();
     for(Element element: elements) {
       builder.append (element.emit (domain, traits));
     }
@@ -27,7 +27,7 @@ public class Bundle {
   }
 
   public Domain domain () {
-    Domain domain = new Domain();
+    var domain = new Domain();
     for(Element element: elements) {
       domain = Domain.union (domain, element.domain());
     }

@@ -51,7 +51,7 @@ public class Parsed {
     // char set operations
     // ---------------------------------------------------------------------------------------------
     protected static char[] sortString (String string) {
-        char[] chars = string.toCharArray ();
+        var chars = string.toCharArray ();
         Arrays.sort (chars);
         return chars;
     }
@@ -81,7 +81,7 @@ public class Parsed {
     }
 
     protected int consumeWhile (char[] inChars, boolean allowEscape) {
-        int start = index;
+        var start = index;
         char c;
         while (check () && in (inChars, c = input[index])) {
             inspectForNewLine(c);
@@ -105,7 +105,7 @@ public class Parsed {
     }
 
     protected int consumeUntil (char[] stopChars, boolean allowEscape) {
-        int start = index;
+        var start = index;
         char c;
         while (check () && notIn (stopChars, c = input[index])) {
             inspectForNewLine(c);
@@ -148,18 +148,18 @@ public class Parsed {
             System.err.println ("Error while parsing input on line " + lineNumber + ", near: ");
             // find the end of the current line. note: line endings could only be '\n' because the
             // input reader consumed the actual line endings for us and replaced them with '\n'
-            int lineEnd = index;
+            var lineEnd = index;
             while ((lineEnd < inputLength) && (input[lineEnd] != NEW_LINE)) {
                 ++lineEnd;
             }
             System.err.println (Arrays.copyOfRange(input, lastLineIndex, lineEnd));
 
             // build the error message, by computing a carat line, and adding the error message to it
-            int errorIndex = index - lastLineIndex;
-            char[] caratChars = new char[errorIndex + 2];
+            var errorIndex = index - lastLineIndex;
+            var caratChars = new char[errorIndex + 2];
             Arrays.fill (caratChars, ' ');
             caratChars[errorIndex] = '^';
-            String carat = new String (caratChars) + errorMessage;
+            var carat = new String (caratChars) + errorMessage;
 
             System.err.println (carat);
 
@@ -176,7 +176,7 @@ public class Parsed {
         String result = null;
         if (expect('"')) {
             // digest the string, and be sure to eat the end quote
-            int start = consumeUntil (stopChars, true);
+            var start = consumeUntil (stopChars, true);
             result = new String(Arrays.copyOfRange(input, start, index++));
         }
         return result;
@@ -185,7 +185,7 @@ public class Parsed {
     protected String readBareValueUntil (char[] stopChars) {
         // " chars " | <chars>
         String result = null;
-        int start = consumeUntil (stopChars, true);
+        var start = consumeUntil (stopChars, true);
 
         // captureInput the result if we actually consumed some characters
         if (index > start) {

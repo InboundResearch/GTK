@@ -10,8 +10,8 @@ public class Domain {
    * default constructor - start with a deliberately empty domain (contains nothing)
    */
   public Domain () {
-    min = Tuple.PT (Double.MAX_VALUE, Double.MAX_VALUE);
-    max = Tuple.PT (-Double.MAX_VALUE, -Double.MAX_VALUE);
+    min = PT(Double.MAX_VALUE, Double.MAX_VALUE);
+    max = PT(-Double.MAX_VALUE, -Double.MAX_VALUE);
   }
 
   /**
@@ -36,8 +36,8 @@ public class Domain {
    * @param maxY max bound in the Y-axis
    */
   public Domain (double minX, double maxX, double minY, double maxY) {
-    min = Tuple.PT (minX, minY);
-    max = Tuple.PT (maxX, maxY);
+    min = PT(minX, minY);
+    max = PT(maxX, maxY);
   }
 
   /**
@@ -46,8 +46,8 @@ public class Domain {
    * @return self-reference so this call can be chained
    */
   public Domain add(Tuple pt) {
-    min = Tuple.PT (Math.min(min.x, pt.x), Math.min(min.y, pt.y));
-    max = Tuple.PT (Math.max(max.x, pt.x), Math.max(max.y, pt.y));
+    min = PT(Math.min(min.x, pt.x), Math.min(min.y, pt.y));
+    max = PT(Math.max(max.x, pt.x), Math.max(max.y, pt.y));
     return this;
   }
 

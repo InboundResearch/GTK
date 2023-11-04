@@ -13,62 +13,62 @@ public class DomainTest {
   @Test
   public void testConstructor() {
     Domain domain = new Domain ();
-    Assertions.assertEquals(domain.min, Tuple.PT (Double.MAX_VALUE, Double.MAX_VALUE));
-    Assertions.assertEquals(domain.max, Tuple.PT (-Double.MAX_VALUE, -Double.MAX_VALUE));
+    Assertions.assertEquals(domain.min, PT(Double.MAX_VALUE, Double.MAX_VALUE));
+    Assertions.assertEquals(domain.max, PT(-Double.MAX_VALUE, -Double.MAX_VALUE));
   }
 
   @Test
   public void testSimilar () {
-    Domain domain = new Domain ().add(Tuple.PT (1, 1));
-    assertSimilar(Tuple.PT (1, 1), domain.min);
-    assertSimilar(Tuple.PT (1, 1), domain.max);
+    Domain domain = new Domain ().add(PT(1, 1));
+    assertSimilar(PT(1, 1), domain.min);
+    assertSimilar(PT(1, 1), domain.max);
 
-    domain.add (Tuple.PT (0, 0));
-    assertSimilar(Tuple.PT (0, 0), domain.min);
-    assertSimilar(Tuple.PT (1, 1), domain.max);
+    domain.add (PT(0, 0));
+    assertSimilar(PT(0, 0), domain.min);
+    assertSimilar(PT(1, 1), domain.max);
 
-    Domain domain2 = new Domain ().add(Tuple.PT (1.1, 1.1));
-    domain2.add (Tuple.PT (-0.1, -0.1));
+    Domain domain2 = new Domain ().add(PT(1.1, 1.1));
+    domain2.add (PT(-0.1, -0.1));
     assertSimilar(new Domain (-0.1, 1.1, -0.1, 1.1), domain2);
   }
 
   @Test
   public void testAdd() {
-    Domain domain = new Domain ().add(Tuple.PT (1, 1));
-    Assertions.assertEquals(domain.min, Tuple.PT (1, 1));
-    Assertions.assertEquals(domain.max, Tuple.PT (1, 1));
+    Domain domain = new Domain ().add(PT(1, 1));
+    Assertions.assertEquals(domain.min, PT(1, 1));
+    Assertions.assertEquals(domain.max, PT(1, 1));
 
-    domain.add (Tuple.PT (0, 0));
-    Assertions.assertEquals(domain.min, Tuple.PT (0, 0));
-    Assertions.assertEquals(domain.max, Tuple.PT (1, 1));
+    domain.add (PT(0, 0));
+    Assertions.assertEquals(domain.min, PT(0, 0));
+    Assertions.assertEquals(domain.max, PT(1, 1));
 
-    domain.add (Tuple.PT (-1, -1));
-    Assertions.assertEquals(domain.min, Tuple.PT (-1, -1));
-    Assertions.assertEquals(domain.max, Tuple.PT (1, 1));
+    domain.add (PT(-1, -1));
+    Assertions.assertEquals(domain.min, PT(-1, -1));
+    Assertions.assertEquals(domain.max, PT(1, 1));
   }
 
   @Test
   public void testBounds() {
     Domain domain = new Domain ()
-            .add (Tuple.PT (2.5, 3.5))
-            .add (Tuple.PT (0.5, 0.5));
+            .add (PT(2.5, 3.5))
+            .add (PT(0.5, 0.5));
 
     // points that should be considered inside the bound
-    assertTrue(domain.contains (Tuple.PT (1.0, 1.0)));
-    assertTrue(domain.contains (Tuple.PT (2.5, 1.0)));
-    assertTrue(domain.contains (Tuple.PT (1.0, 3.5)));
-    assertTrue(domain.contains (Tuple.PT (0.5, 0.5)));
-    assertTrue(domain.contains (Tuple.PT (2.5, 3.5)));
+    assertTrue(domain.contains (PT(1.0, 1.0)));
+    assertTrue(domain.contains (PT(2.5, 1.0)));
+    assertTrue(domain.contains (PT(1.0, 3.5)));
+    assertTrue(domain.contains (PT(0.5, 0.5)));
+    assertTrue(domain.contains (PT(2.5, 3.5)));
 
     // points that are outside the bound
     assertFalse(domain.contains (Tuple.ORIGIN));
-    assertFalse(domain.contains (Tuple.PT (1.0, 0.0)));
-    assertFalse(domain.contains (Tuple.PT (0.0, 1.0)));
-    assertFalse(domain.contains (Tuple.PT (5.0, 0.0)));
-    assertFalse(domain.contains (Tuple.PT (5.0, 1.0)));
-    assertFalse(domain.contains (Tuple.PT (0.0, 5.0)));
-    assertFalse(domain.contains (Tuple.PT (1.0, 5.0)));
-    assertFalse(domain.contains (Tuple.PT (5.0, 5.0)));
+    assertFalse(domain.contains (PT(1.0, 0.0)));
+    assertFalse(domain.contains (PT(0.0, 1.0)));
+    assertFalse(domain.contains (PT(5.0, 0.0)));
+    assertFalse(domain.contains (PT(5.0, 1.0)));
+    assertFalse(domain.contains (PT(0.0, 5.0)));
+    assertFalse(domain.contains (PT(1.0, 5.0)));
+    assertFalse(domain.contains (PT(5.0, 5.0)));
 
     assertSimilar (Tuple.VEC (2.0, 3.0), domain.size());
     assertSimilar (Tuple.VEC (2.0, 3.0).norm (), domain.span());
@@ -78,7 +78,7 @@ public class DomainTest {
   public void testScale() {
     Domain domain = new Domain ()
             .add (Tuple.ORIGIN)
-            .add (Tuple.PT (1.0, 1.0));
+            .add (PT(1.0, 1.0));
     assertSimilar (new Domain (-1, 2, -1, 2), domain.scale (3));
     assertSimilar (new Domain (0.25, 0.75, 0.25, 0.75), domain.scale (0.5));
   }
@@ -111,124 +111,124 @@ public class DomainTest {
     Domain domain = new Domain (1, 3, 1, 3);
 
     // trivial accept and reject
-    testDomainContainsSegment (domain, Tuple.PT (0, 0), Tuple.PT (0.5, 0.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 0), Tuple.PT (1.5, 0.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (3.5, 0), Tuple.PT (3.5, 0.5), false);
+    testDomainContainsSegment (domain, PT(0, 0), PT(0.5, 0.5), false);
+    testDomainContainsSegment (domain, PT(1.5, 0), PT(1.5, 0.5), false);
+    testDomainContainsSegment (domain, PT(3.5, 0), PT(3.5, 0.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 2), Tuple.PT (0.5, 2.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 2), Tuple.PT (1.5, 2.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (3.5, 2), Tuple.PT (3.5, 2.5), false);
+    testDomainContainsSegment (domain, PT(0, 2), PT(0.5, 2.5), false);
+    testDomainContainsSegment (domain, PT(1.5, 2), PT(1.5, 2.5), true);
+    testDomainContainsSegment (domain, PT(3.5, 2), PT(3.5, 2.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 4), Tuple.PT (0.5, 4.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 4), Tuple.PT (1.5, 4.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (3.5, 4), Tuple.PT (3.5, 4.5), false);
+    testDomainContainsSegment (domain, PT(0, 4), PT(0.5, 4.5), false);
+    testDomainContainsSegment (domain, PT(1.5, 4), PT(1.5, 4.5), false);
+    testDomainContainsSegment (domain, PT(3.5, 4), PT(3.5, 4.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 0), Tuple.PT (1.5, 0.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (2, 0), Tuple.PT (4.5, 0.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (0, 0), Tuple.PT (4.5, 0.5), false);
+    testDomainContainsSegment (domain, PT(0, 0), PT(1.5, 0.5), false);
+    testDomainContainsSegment (domain, PT(2, 0), PT(4.5, 0.5), false);
+    testDomainContainsSegment (domain, PT(0, 0), PT(4.5, 0.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 2), Tuple.PT (4.5, 2.5), true);
+    testDomainContainsSegment (domain, PT(0, 2), PT(4.5, 2.5), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 4), Tuple.PT (1.5, 4.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (2, 4), Tuple.PT (4.5, 4.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (0, 4), Tuple.PT (4.5, 4.5), false);
+    testDomainContainsSegment (domain, PT(0, 4), PT(1.5, 4.5), false);
+    testDomainContainsSegment (domain, PT(2, 4), PT(4.5, 4.5), false);
+    testDomainContainsSegment (domain, PT(0, 4), PT(4.5, 4.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 0), Tuple.PT (0, 2.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (0, 2.5), Tuple.PT (0, 4.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (0, 0), Tuple.PT (0, 4.5), false);
+    testDomainContainsSegment (domain, PT(0, 0), PT(0, 2.5), false);
+    testDomainContainsSegment (domain, PT(0, 2.5), PT(0, 4.5), false);
+    testDomainContainsSegment (domain, PT(0, 0), PT(0, 4.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (2, 0), Tuple.PT (2, 4.5), true);
+    testDomainContainsSegment (domain, PT(2, 0), PT(2, 4.5), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (4, 0), Tuple.PT (4, 2.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (4, 2.5), Tuple.PT (4, 4.5), false);
-    testDomainContainsSegment (domain, Tuple.PT (4, 0), Tuple.PT (4, 4.5), false);
+    testDomainContainsSegment (domain, PT(4, 0), PT(4, 2.5), false);
+    testDomainContainsSegment (domain, PT(4, 2.5), PT(4, 4.5), false);
+    testDomainContainsSegment (domain, PT(4, 0), PT(4, 4.5), false);
 
     // trivial cases with one end point in
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (2.5, 2.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(2.5, 2.5), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (0.5, 0.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (2.5, 0.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (4.5, 0.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (0.5, 2.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (4.5, 2.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (0.5, 4.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (2.5, 4.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (1.5, 1.5), Tuple.PT (4.5, 4.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(0.5, 0.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(2.5, 0.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(4.5, 0.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(0.5, 2.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(4.5, 2.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(0.5, 4.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(2.5, 4.5), true);
+    testDomainContainsSegment (domain, PT(1.5, 1.5), PT(4.5, 4.5), true);
 
     // complex  cases, type 1 - two points outside only one edge
-    testDomainContainsSegment (domain, Tuple.PT (2, 0.5), Tuple.PT (3.5, 2), true);
-    testDomainContainsSegment (domain, Tuple.PT (2, -0.5), Tuple.PT (4.5, 2), false);
+    testDomainContainsSegment (domain, PT(2, 0.5), PT(3.5, 2), true);
+    testDomainContainsSegment (domain, PT(2, -0.5), PT(4.5, 2), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (2, 0.5), Tuple.PT (0.5, 2), true);
-    testDomainContainsSegment (domain, Tuple.PT (2, -0.5), Tuple.PT (-0.5, 2), false);
+    testDomainContainsSegment (domain, PT(2, 0.5), PT(0.5, 2), true);
+    testDomainContainsSegment (domain, PT(2, -0.5), PT(-0.5, 2), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (0.5, 2.0), Tuple.PT (2.0, 3.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (-0.5, 2.0), Tuple.PT (2.0, 4.5), false);
+    testDomainContainsSegment (domain, PT(0.5, 2.0), PT(2.0, 3.5), true);
+    testDomainContainsSegment (domain, PT(-0.5, 2.0), PT(2.0, 4.5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (3.5, 2.0), Tuple.PT (2.0, 3.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (4.5, 2.0), Tuple.PT (2.0, 4.5), false);
+    testDomainContainsSegment (domain, PT(3.5, 2.0), PT(2.0, 3.5), true);
+    testDomainContainsSegment (domain, PT(4.5, 2.0), PT(2.0, 4.5), false);
 
     // complex  cases, type 2 - one point outside an edge, the other outside two edges (corner)
     // above
-    testDomainContainsSegment (domain, Tuple.PT (1.1, 3.1), Tuple.PT (3.1, 0), true);
-    testDomainContainsSegment (domain, Tuple.PT (2.9, 3.1), Tuple.PT (4, 0), true);
-    testDomainContainsSegment (domain, Tuple.PT (2.9, 5), Tuple.PT (5, 0), false);
+    testDomainContainsSegment (domain, PT(1.1, 3.1), PT(3.1, 0), true);
+    testDomainContainsSegment (domain, PT(2.9, 3.1), PT(4, 0), true);
+    testDomainContainsSegment (domain, PT(2.9, 5), PT(5, 0), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (1.1, 5), Tuple.PT (-1, 0), false);
-    testDomainContainsSegment (domain, Tuple.PT (1.1, 3.1), Tuple.PT (0, 0), true);
-    testDomainContainsSegment (domain, Tuple.PT (2.9, 3.1), Tuple.PT (0.9, 0), true);
+    testDomainContainsSegment (domain, PT(1.1, 5), PT(-1, 0), false);
+    testDomainContainsSegment (domain, PT(1.1, 3.1), PT(0, 0), true);
+    testDomainContainsSegment (domain, PT(2.9, 3.1), PT(0.9, 0), true);
 
     // below
-    testDomainContainsSegment (domain, Tuple.PT (1.1, 0.9), Tuple.PT (3.1, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (2.9, 0.9), Tuple.PT (4, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (2.9, -1), Tuple.PT (5, 4), false);
+    testDomainContainsSegment (domain, PT(1.1, 0.9), PT(3.1, 4), true);
+    testDomainContainsSegment (domain, PT(2.9, 0.9), PT(4, 4), true);
+    testDomainContainsSegment (domain, PT(2.9, -1), PT(5, 4), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (1.1, -1), Tuple.PT (-1, 4), false);
-    testDomainContainsSegment (domain, Tuple.PT (1.1, 0.9), Tuple.PT (0, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (2.9, 0.9), Tuple.PT (0.9, 4), true);
+    testDomainContainsSegment (domain, PT(1.1, -1), PT(-1, 4), false);
+    testDomainContainsSegment (domain, PT(1.1, 0.9), PT(0, 4), true);
+    testDomainContainsSegment (domain, PT(2.9, 0.9), PT(0.9, 4), true);
 
     // left
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 1.1), Tuple.PT (4, 3.1), true);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 2.9), Tuple.PT (4, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (-1., 2.9), Tuple.PT (4, 5), false);
+    testDomainContainsSegment (domain, PT(0.9, 1.1), PT(4, 3.1), true);
+    testDomainContainsSegment (domain, PT(0.9, 2.9), PT(4, 4), true);
+    testDomainContainsSegment (domain, PT(-1., 2.9), PT(4, 5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (-1, 1.1), Tuple.PT (4, -1), false);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 1.1), Tuple.PT (4, 0), true);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 2.9), Tuple.PT (4, 0.9), true);
+    testDomainContainsSegment (domain, PT(-1, 1.1), PT(4, -1), false);
+    testDomainContainsSegment (domain, PT(0.9, 1.1), PT(4, 0), true);
+    testDomainContainsSegment (domain, PT(0.9, 2.9), PT(4, 0.9), true);
 
     // right
-    testDomainContainsSegment (domain, Tuple.PT (3.1, 1.1), Tuple.PT (0, 3.1), true);
-    testDomainContainsSegment (domain, Tuple.PT (3.1, 2.9), Tuple.PT (0, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (5, 2.9), Tuple.PT (0, 5), false);
+    testDomainContainsSegment (domain, PT(3.1, 1.1), PT(0, 3.1), true);
+    testDomainContainsSegment (domain, PT(3.1, 2.9), PT(0, 4), true);
+    testDomainContainsSegment (domain, PT(5, 2.9), PT(0, 5), false);
 
-    testDomainContainsSegment (domain, Tuple.PT (5, 1.1), Tuple.PT (0, -1), false);
-    testDomainContainsSegment (domain, Tuple.PT (3.1, 1.1), Tuple.PT (0, 0), true);
-    testDomainContainsSegment (domain, Tuple.PT (3.1, 2.9), Tuple.PT (0, 0.9), true);
+    testDomainContainsSegment (domain, PT(5, 1.1), PT(0, -1), false);
+    testDomainContainsSegment (domain, PT(3.1, 1.1), PT(0, 0), true);
+    testDomainContainsSegment (domain, PT(3.1, 2.9), PT(0, 0.9), true);
 
 
     // complex  cases, type 3 - both points outside on opposite corners
-    testDomainContainsSegment (domain, Tuple.PT (0.5, 0.5), Tuple.PT (3.5, 3.5), true);
-    testDomainContainsSegment (domain, Tuple.PT (3.5, 0.5), Tuple.PT (0.5, 3.5), true);
+    testDomainContainsSegment (domain, PT(0.5, 0.5), PT(3.5, 3.5), true);
+    testDomainContainsSegment (domain, PT(3.5, 0.5), PT(0.5, 3.5), true);
 
     // positive slope
-    testDomainContainsSegment (domain, Tuple.PT (0, 0.9), Tuple.PT (3.1, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 0), Tuple.PT (4, 3.1), true);
+    testDomainContainsSegment (domain, PT(0, 0.9), PT(3.1, 4), true);
+    testDomainContainsSegment (domain, PT(0.9, 0), PT(4, 3.1), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (0, 0.9), Tuple.PT (4, 3.1), true);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 0), Tuple.PT (3.1, 4), true);
+    testDomainContainsSegment (domain, PT(0, 0.9), PT(4, 3.1), true);
+    testDomainContainsSegment (domain, PT(0.9, 0), PT(3.1, 4), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (-2, 0.9), Tuple.PT (3.1, 6), false);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, -2), Tuple.PT (6, 3.1), false);
+    testDomainContainsSegment (domain, PT(-2, 0.9), PT(3.1, 6), false);
+    testDomainContainsSegment (domain, PT(0.9, -2), PT(6, 3.1), false);
 
     // negative slope
-    testDomainContainsSegment (domain, Tuple.PT (3.1, 0), Tuple.PT (0, 3.1), true);
-    testDomainContainsSegment (domain, Tuple.PT (4, 0.9), Tuple.PT (0.9, 4), true);
+    testDomainContainsSegment (domain, PT(3.1, 0), PT(0, 3.1), true);
+    testDomainContainsSegment (domain, PT(4, 0.9), PT(0.9, 4), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (3.1, 0), Tuple.PT (0.9, 4), true);
-    testDomainContainsSegment (domain, Tuple.PT (4, 0.9), Tuple.PT (0, 3.1), true);
+    testDomainContainsSegment (domain, PT(3.1, 0), PT(0.9, 4), true);
+    testDomainContainsSegment (domain, PT(4, 0.9), PT(0, 3.1), true);
 
-    testDomainContainsSegment (domain, Tuple.PT (-2, 3.1), Tuple.PT (3.1, -2), false);
-    testDomainContainsSegment (domain, Tuple.PT (0.9, 6), Tuple.PT (6, 0.9), false);
+    testDomainContainsSegment (domain, PT(-2, 3.1), PT(3.1, -2), false);
+    testDomainContainsSegment (domain, PT(0.9, 6), PT(6, 0.9), false);
 
   }
 }

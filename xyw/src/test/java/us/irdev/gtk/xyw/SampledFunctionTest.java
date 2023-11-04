@@ -24,7 +24,7 @@ public class SampledFunctionTest {
   private static Rows fromArray(double[] array) {
     List<Row> rows = new ArrayList<>();
     for (int i = 0; i < array.length; i += 3) {
-      rows.add (new Row (Tuple.PT (array[i], array[i + 1]), array[i + 2]));
+      rows.add (new Row (PT(array[i], array[i + 1]), array[i + 2]));
     }
     return new Rows (rows);
   }
@@ -65,7 +65,7 @@ public class SampledFunctionTest {
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorWrap ());
-    Helper.assertSimilar (function.domain, new Domain(Tuple.PT (-1, -1), Tuple.PT (2, 2)));
+    Helper.assertSimilar (function.domain, new Domain(PT(-1, -1), PT(2, 2)));
 
     // test the actual sample points
     assertEquals(0.0, function.f (-1.0, -1.0));
@@ -145,7 +145,7 @@ public class SampledFunctionTest {
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
-    Helper.assertSimilar (function.domain, new Domain(Tuple.PT (-1, -1), Tuple.PT (1, 1)));
+    Helper.assertSimilar (function.domain, new Domain(PT(-1, -1), PT(1, 1)));
 
     List<Segment> segments = function.iso(0.5);
     verifyList(new Segment[]{
@@ -173,7 +173,7 @@ public class SampledFunctionTest {
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorWrap ());
-    Helper.assertSimilar (function.domain, new Domain(Tuple.PT (-1, -1), Tuple.PT (1, 1)));
+    Helper.assertSimilar (function.domain, new Domain(PT(-1, -1), PT(1, 1)));
 
     double targetValue = 0.5;
     List<Segment> segments = function.iso(targetValue);
@@ -285,8 +285,8 @@ public class SampledFunctionTest {
 
     PolyLine iso = PolyLine.polyLinesFromSegments (segments).get(0);
     assertEquals(2, iso.getPoints().length);
-    Helper.assertSimilar(Tuple.PT (0.5, 1), iso.getPoints()[0]);
-    Helper.assertSimilar(Tuple.PT (1, 0.5), iso.getPoints()[1]);
+    Helper.assertSimilar(PT(0.5, 1), iso.getPoints()[0]);
+    Helper.assertSimilar(PT(1, 0.5), iso.getPoints()[1]);
 
     // verify that a point on that straight line is not a correct approximation of the bilinear
     // interpolation (ruled surface)
@@ -300,7 +300,7 @@ public class SampledFunctionTest {
 
     // now try to refine the original midpoint to see if we get the correct value
     Tuple refined = function.refineSampleLocation(midpoint, midpoint, targetValue);
-    Helper.assertSimilar(refined, Tuple.PT (coord, coord));
+    Helper.assertSimilar(refined, PT(coord, coord));
   }
 
 
@@ -326,7 +326,7 @@ public class SampledFunctionTest {
 
     @Override
     public Tuple at (double x) {
-      return Tuple.PT (x, (Math.sin(x * Math.PI * 2.0 * count) + 1.0) * 0.5 * scale);
+      return PT(x, (Math.sin(x * Math.PI * 2.0 * count) + 1.0) * 0.5 * scale);
     }
   }
 
@@ -340,7 +340,7 @@ public class SampledFunctionTest {
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
     SampledFunction.Crossing crossing = function.findCrossing(new TupleFunctionAtAdapter(), 0.31, 0.71, 0.5);
     Helper.assertSimilar (0.5, crossing.x);
-    Helper.assertSimilar (Tuple.PT (0.5, 0.5), crossing.loc);
+    Helper.assertSimilar (PT(0.5, 0.5), crossing.loc);
     Helper.assertSimilar (0.5, crossing.value);
   }
 

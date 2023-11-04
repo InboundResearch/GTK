@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
@@ -57,9 +56,8 @@ public class Utility {
    */
   public static boolean writeFile (String path, String text, Charset encoding) {
     try {
-      Path targetPath = Paths.get (path);
-      byte[] bytes = text.getBytes (encoding);
-      Files.write (targetPath, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+      var targetPath = Paths.get (path);
+      Files.writeString (targetPath, text, encoding, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
       return true;
     }
     catch (IOException ignored) {
