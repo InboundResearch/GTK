@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- GTK parent POM -->
+  <parent>
+    <groupId>us.irdev.gtk</groupId>
+    <artifactId>pom</artifactId>
+    <version>${gtk.version}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <!-- set out artifact name and our own version -->
+  <artifactId>xyw-test</artifactId>
+  <name>2D Math Testing Utilities</name>
+  <description>Geometry Tool Kit (GTK) - 2D Math Testing Utilities</description>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>xyw</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>

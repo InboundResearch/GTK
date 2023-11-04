@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- GTK parent POM -->
+  <parent>
+    <groupId>us.irdev.gtk</groupId>
+    <artifactId>pom</artifactId>
+    <version>${gtk.version}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <!-- set out artifact name and our own version -->
+  <artifactId>system-test</artifactId>
+  <name>System Tests</name>
+  <description>Geometry Tool Kit (GTK) - System Tests</description>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>io</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>xyw</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>svg</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>symbolic-math</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>xyw-test</artifactId>
+      <version>${gtk.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!-- skip deployment for this test module -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <!-- aggregate coverage reporting -->
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report-aggregate</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <title>Geometry Tool Kit (GTK) v${project.version}</title>
+              <footer>Code Coverage Report for ${project.groupId} ${project.version}</footer>
+              <includes>
+                <include>**/*.class</include>
+              </includes>
+              <outputDirectory>${project.parent.reporting.outputDirectory}/coverage</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
