@@ -3,7 +3,7 @@
 
   <!-- parent SD-POM provides a turn-key Java 8 build environment with up-to-date dependencies for
        test and coverage. we only need to update the scm developer connection and add the site
-       deploy script. see https://sdint-bitbucket.jhuapl.edu:8443/projects/POM/repos/sd-pom -->
+       deploy script. -->
   <parent>
     <groupId>us.irdev</groupId>
     <artifactId>ir-pom</artifactId>
