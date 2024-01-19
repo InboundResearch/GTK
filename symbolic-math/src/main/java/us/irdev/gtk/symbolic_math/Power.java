@@ -34,7 +34,7 @@ public class Power extends ComputedExpression {
 
   @Override
   public String computeString () {
-    return Utility.wrap(new StringBuilder().append (base.toString()).append("^").append(exponent.toString ()), true);
+    return wrap(new StringBuilder().append (base.toString()).append("^").append(exponent.toString ()), true);
   }
 
   @Override
@@ -50,7 +50,7 @@ public class Power extends ComputedExpression {
       sb.append (base.prettyString(true)).append(exp);
       return sb.toString();
     }
-    return Utility.wrap(new StringBuilder().append (base.prettyString(true)).append("^").append(exponent.prettyString (true)), true);
+    return wrap(new StringBuilder().append (base.prettyString(true)).append("^").append(exponent.prettyString (true)), true);
   }
 
   @Override

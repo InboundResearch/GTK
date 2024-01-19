@@ -3,6 +3,13 @@ package us.irdev.gtk.functional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * java provides the stream interfaces that contain map, reduce, and filtering capabilities. we find
+ * they are limited in ways that interfere with the goal of reducing code and building efficient
+ * operations. these map, reduce, filter, and split operations are better suited to the way we work
+ * with lists, most notably having the freedom to use the first element of a list as the initial
+ * value, and providing additional functionality like split.
+ */
 public class ListFunc {
   //------------------------------------------------------------------------------------------------
   /**
@@ -41,6 +48,16 @@ public class ListFunc {
 
   public static <A, B> B reduce(List<A> input, B initialValue, Interfaces.ReduceNoIndex<A, B> reduceInterface) {
     return reduce (input, 0, initialValue, reduceInterface);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <A, B> B reduce(List<A> input, Interfaces.ReduceNoIndex<A, B> reduceInterface) {
+    return reduce (input, 1, (B) input.get(0), reduceInterface);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <A, B> B reduce(List<A> input, Interfaces.ReduceWithIndex<A, B> reduceInterface) {
+    return reduce (input, 1, (B) input.get(0), reduceInterface);
   }
 
   public static <A> double reduceDouble(List<A> input, int start, double initialValue, Interfaces.ReduceWithIndexDouble<A> reduceInterface) {
@@ -82,6 +99,30 @@ public class ListFunc {
 
   public static <A> int reduceInt(List<A> input, int initialValue, Interfaces.ReduceNoIndexInt<A> reduceInterface) {
     return reduceInt (input, 0, initialValue, reduceInterface);
+  }
+
+
+
+
+
+  public static <A> boolean reduceBool(List<A> input, int start, boolean initialValue, Interfaces.ReduceWithIndexBool<A> reduceInterface) {
+    boolean b = initialValue;
+    for (int i = start; i < input.size(); ++i) {
+      b = reduceInterface.act (i, input.get(i), b);
+    }
+    return b;
+  }
+
+  public static <A> boolean reduceBool(List<A> input, boolean initialValue, Interfaces.ReduceWithIndexBool<A> reduceInterface) {
+    return reduceBool (input, 0, initialValue, reduceInterface);
+  }
+
+  public static <A> boolean reduceBool(List<A> input, int start, boolean initialValue, Interfaces.ReduceNoIndexBool<A> reduceInterface) {
+    return reduceBool (input, start, initialValue, (i, a, b) -> reduceInterface.act (a, b));
+  }
+
+  public static <A> boolean reduceBool(List<A> input, boolean initialValue, Interfaces.ReduceNoIndexBool<A> reduceInterface) {
+    return reduceBool (input, 0, initialValue, reduceInterface);
   }
 
   //------------------------------------------------------------------------------------------------

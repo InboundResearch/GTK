@@ -118,11 +118,11 @@ public class Tuple {
     return toString().hashCode();
   }
 
-  public static Tuple PT(double x, double y) {
+  public static Tuple PT (double x, double y) {
     return new Tuple (x, y, 1);
   }
 
-  public static Tuple PT(Tuple xy) {
+  public static Tuple PT (Tuple xy) {
     // you probably don't mean to truncate an unprojected tuple
     assert(Numerics.similar (0, xy.w) || Numerics.similar (1, xy.w));
     return new Tuple (xy.x, xy.y, 1);

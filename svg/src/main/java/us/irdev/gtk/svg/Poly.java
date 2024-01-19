@@ -15,7 +15,7 @@ public class Poly implements Element {
   @Override
   public String emit (Domain domain, Traits traits) {
     // <polygon points="200,10 250,190 160,210" style="fill:lime;stroke:purple;stroke-width:1" />
-    var builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     builder.append(String.format("<poly%s fill=\"%s\" stroke=\"%s\" stroke-width=\"%f%%\" stroke-linejoin=\"round\" stroke-linecap=\"round\" points=\"", polyine.isClosed() ? "gon" : "line", polyine.isClosed() ? traits.fillColor : "none", traits.strokeColor, traits.strokeWeight));
     String spacer = "";
     for (Tuple point: polyine.getPoints()) {

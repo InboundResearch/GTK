@@ -54,7 +54,7 @@ public class PolyLine {
   }
 
   private static PolyLine extractLine(Tuple tuple, Map<Tuple, List<Segment>> mappedSegments, boolean closed) {
-    var output = new ArrayList<Tuple> ();
+    List<Tuple> output = new ArrayList<> ();
     Segment segment = null;
     // pull each segment in the line in-turn and hopscotch along it until all the segments in this
     // line have been processed
@@ -66,7 +66,7 @@ public class PolyLine {
 
   private static Tuple findEndpoint (Map<Tuple, List<Segment>> mappedSegments) {
     // look for a tuple with only one entry first, these are endpoints
-    var tuples = new ArrayList<Tuple> (mappedSegments.keySet());
+    List<Tuple> tuples = new ArrayList<> (mappedSegments.keySet());
     for (Tuple tuple: tuples) {
       if (mappedSegments.get(tuple).size() == 1) {
         return tuple;
@@ -78,10 +78,10 @@ public class PolyLine {
   }
 
   public static List<PolyLine> polyLinesFromSegments (List<Segment> segments) {
-    var output = new ArrayList<PolyLine> ();
+    List<PolyLine> output = new ArrayList<> ();
     // start by putting all the segments into a mapping table by their endpoints. this enables an
     // efficient query
-    var mappedSegments = new HashMap<Tuple, List<Segment>> ();
+    Map<Tuple, List<Segment>> mappedSegments = new HashMap<> ();
     for (Segment segment: segments) {
       // create or update a list for both ends of the segment, first a
       List<Segment> list = mappedSegments.getOrDefault(segment.a, new ArrayList<> ());
@@ -115,7 +115,7 @@ public class PolyLine {
   public List<Segment> toSegments () {
     if (points.length > 1) {
       int count = points.length - (closed ? 0 : 1);
-      var output = new ArrayList<Segment>(count);
+      List<Segment> output = new ArrayList<>(count);
       for (int i = 0; i < count; ++i) {
         output.add (new Segment (points[i], points[(i + 1) % points.length]));
       }

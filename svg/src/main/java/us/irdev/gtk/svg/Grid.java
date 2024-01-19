@@ -15,7 +15,7 @@ public class Grid implements Element {
   @Override
   public String emit (Domain domain, Traits traits) {
     // emit gridlines using the current traits
-    var builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
 
     Tuple size = domain.size();
 

@@ -46,10 +46,10 @@ public class NumericsTest {
     Assertions.assertFalse(Numerics.withinTolerance(1000 + (2 * Numerics.TOLERANCE), 1000));
 
     // things that should be true
-    Assertions.assertTrue(Numerics.withinTolerance(1, 1));
-    Assertions.assertTrue(Numerics.withinTolerance(1 - (Numerics.TOLERANCE * 0.975), 1));
-    Assertions.assertTrue(Numerics.withinTolerance(1 + (Numerics.TOLERANCE * 0.975), 1));
-    Assertions.assertTrue(Numerics.withinTolerance(1000 + (Numerics.TOLERANCE * 0.975), 1000));
+    assertTrue (Numerics.withinTolerance(1, 1));
+    assertTrue (Numerics.withinTolerance(1 - (Numerics.TOLERANCE * 0.975), 1));
+    assertTrue (Numerics.withinTolerance(1 + (Numerics.TOLERANCE * 0.975), 1));
+    assertTrue (Numerics.withinTolerance(1000 + (Numerics.TOLERANCE * 0.975), 1000));
 
     // some interesting cases that should fail with the tolerances approach
     Assertions.assertFalse(Numerics.withinTolerance(1 - (Numerics.TOLERANCE * 1.025), 1));
@@ -69,14 +69,14 @@ public class NumericsTest {
     Assertions.assertFalse(Numerics.similar (1000 + (3000 * Numerics.TOLERANCE), 1000));
 
     // things that should be true
-    Assertions.assertTrue(Numerics.similar (1, 1));
-    Assertions.assertTrue(Numerics.similar (1 - Numerics.TOLERANCE, 1));
-    Assertions.assertTrue(Numerics.similar (1 + Numerics.TOLERANCE, 1));
-    Assertions.assertTrue(Numerics.similar (1000 + Numerics.TOLERANCE, 1000));
-    Assertions.assertTrue(Numerics.similar (10 + Numerics.TOLERANCE, 10));
-    Assertions.assertTrue(Numerics.similar (10 + (10 * Numerics.TOLERANCE), 10));
-    Assertions.assertTrue(Numerics.similar (100 + (100 * Numerics.TOLERANCE), 100));
-    Assertions.assertTrue(Numerics.similar (1000 + (1000 * Numerics.TOLERANCE), 1000));
+    assertTrue (Numerics.similar (1, 1));
+    assertTrue (Numerics.similar (1 - Numerics.TOLERANCE, 1));
+    assertTrue (Numerics.similar (1 + Numerics.TOLERANCE, 1));
+    assertTrue (Numerics.similar (1000 + Numerics.TOLERANCE, 1000));
+    assertTrue (Numerics.similar (10 + Numerics.TOLERANCE, 10));
+    assertTrue (Numerics.similar (10 + (10 * Numerics.TOLERANCE), 10));
+    assertTrue (Numerics.similar (100 + (100 * Numerics.TOLERANCE), 100));
+    assertTrue (Numerics.similar (1000 + (1000 * Numerics.TOLERANCE), 1000));
   }
 
 }

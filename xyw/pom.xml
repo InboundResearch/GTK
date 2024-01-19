@@ -21,6 +21,11 @@
       <artifactId>io</artifactId>
       <version>${gtk.version}</version>
     </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>functional</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

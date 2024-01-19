@@ -35,6 +35,14 @@ public class Interfaces {
     int act (A a, int value);
   }
 
+  public static interface ReduceWithIndexBool<A> {
+    boolean act (int i, A a, boolean value);
+  }
+
+  public static interface ReduceNoIndexBool<A> {
+    boolean act (A a, boolean value);
+  }
+
   //------------------------------------------------------------------------------------------------
   public static interface FilterWithIndex<A> {
     boolean check (int i, A a);

@@ -6,17 +6,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PolyLineTest {
   @Test
   public void testMakeLines() {
-    var a = PT (1, 1);
-    var b = PT (1, -1);
-    var c = PT (-1, -1);
-    var d = PT (-1, 1);
+    Tuple a = PT (1, 1);
+    Tuple b = PT (1, -1);
+    Tuple c = PT (-1, -1);
+    Tuple d = PT (-1, 1);
     {
       List<Segment> segments = Arrays.asList(
               new Segment (a, b),
@@ -64,17 +64,17 @@ public class PolyLineTest {
 
   @Test
   public void testToSegments() {
-    var points = new ArrayList<Tuple> ();
+    List<Tuple> points = new ArrayList ();
     points.add (PT(-5, -5));
     points.add (PT(-4, 4));
     points.add (PT(-3, 3));
 
-    var polyline = new  PolyLine (points, false);
+    PolyLine polyline = new PolyLine (points, false);
     List<Segment> segments = polyline.toSegments ();
     assertEquals(2, segments.size());
-    Helper.assertSimilar(segments.get(0).a, points.get(0));
-    Helper.assertSimilar(segments.get(0).b, points.get(1));
-    Helper.assertSimilar(segments.get(1).a, points.get(1));
-    Helper.assertSimilar(segments.get(1).b, points.get(2));
+    assertSimilar(segments.get(0).a, points.get(0));
+    assertSimilar(segments.get(0).b, points.get(1));
+    assertSimilar(segments.get(1).a, points.get(1));
+    assertSimilar(segments.get(1).b, points.get(2));
   }
 }

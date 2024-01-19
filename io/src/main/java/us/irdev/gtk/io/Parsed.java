@@ -1,5 +1,8 @@
 package us.irdev.gtk.io;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Arrays;
 
 /**
@@ -9,6 +12,8 @@ import java.util.Arrays;
  * top of it.
  */
 public class Parsed {
+    private static final Logger log = LogManager.getLogger(Parsed.class);
+
     protected final char[] input;
 
     protected int index;
@@ -51,7 +56,7 @@ public class Parsed {
     // char set operations
     // ---------------------------------------------------------------------------------------------
     protected static char[] sortString (String string) {
-        var chars = string.toCharArray ();
+        char[] chars = string.toCharArray ();
         Arrays.sort (chars);
         return chars;
     }
@@ -81,7 +86,7 @@ public class Parsed {
     }
 
     protected int consumeWhile (char[] inChars, boolean allowEscape) {
-        var start = index;
+        int start = index;
         char c;
         while (check () && in (inChars, c = input[index])) {
             inspectForNewLine(c);
@@ -105,7 +110,7 @@ public class Parsed {
     }
 
     protected int consumeUntil (char[] stopChars, boolean allowEscape) {
-        var start = index;
+        int start = index;
         char c;
         while (check () && notIn (stopChars, c = input[index])) {
             inspectForNewLine(c);
@@ -136,6 +141,19 @@ public class Parsed {
         return false;
     }
 
+    protected boolean expect(char[] chars) {
+        consumeWhitespace();
+
+        // the next character should be the one we expect
+        char c;
+        if (check() && in(chars, (c = input[index]))) {
+            inspectForNewLine(c);
+            ++index;
+            return true;
+        }
+        return false;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // error reporting
     // ---------------------------------------------------------------------------------------------
@@ -145,23 +163,23 @@ public class Parsed {
         // being reported
         if (! error) {
             // say where the error is
-            System.err.println ("Error while parsing input on line " + lineNumber + ", near: ");
+            log.error ("Error while parsing input on line " + lineNumber + ", near: ");
             // find the end of the current line. note: line endings could only be '\n' because the
             // input reader consumed the actual line endings for us and replaced them with '\n'
-            var lineEnd = index;
+            int lineEnd = index;
             while ((lineEnd < inputLength) && (input[lineEnd] != NEW_LINE)) {
                 ++lineEnd;
             }
-            System.err.println (Arrays.copyOfRange(input, lastLineIndex, lineEnd));
+            log.error  (new String (Arrays.copyOfRange(input, lastLineIndex, lineEnd)));
 
             // build the error message, by computing a carat line, and adding the error message to it
-            var errorIndex = index - lastLineIndex;
-            var caratChars = new char[errorIndex + 2];
+            int errorIndex = index - lastLineIndex;
+            char[] caratChars = new char[errorIndex + 2];
             Arrays.fill (caratChars, ' ');
             caratChars[errorIndex] = '^';
-            var carat = new String (caratChars) + errorMessage;
+            String carat = new String (caratChars) + errorMessage;
 
-            System.err.println (carat);
+            log.error  (carat);
 
             // set the error state
             error = true;
@@ -171,27 +189,28 @@ public class Parsed {
     // ---------------------------------------------------------------------------------------------
     // composite reader functions
     // ---------------------------------------------------------------------------------------------
-    protected String readString (char[] stopChars) {
+    protected String extractString(int start, int end, boolean trim) {
+        String extract = new String(Arrays.copyOfRange(input, start, end));
+        return trim ? extract.trim() : extract;
+    }
+
+    protected String extractString(int start, int end) {
+        return extractString(start, end, false);
+    }
+
+    protected String readString (char[] quoteChars) {
         // " chars " | <chars>
-        String result = null;
-        if (expect('"')) {
+        if (expect(quoteChars)) {
             // digest the string, and be sure to eat the end quote
-            var start = consumeUntil (stopChars, true);
-            result = new String(Arrays.copyOfRange(input, start, index++));
+            int start = consumeUntil (quoteChars, true);
+            return extractString(start, index++);
         }
-        return result;
+        return null;
     }
 
     protected String readBareValueUntil (char[] stopChars) {
         // " chars " | <chars>
-        String result = null;
-        var start = consumeUntil (stopChars, true);
-
-        // captureInput the result if we actually consumed some characters
-        if (index > start) {
-            result = new String(Arrays.copyOfRange(input, start, index));
-        }
-
-        return result;
+        int start = consumeUntil (stopChars, true);
+        return (index > start) ? extractString (start, index) : null;
     }
 }

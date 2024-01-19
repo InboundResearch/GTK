@@ -1,6 +1,7 @@
 package us.irdev.gtk.xyw.db;
 
 import us.irdev.gtk.xyw.*;
+import us.irdev.gtk.xyw.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,7 +79,7 @@ public class Rows {
     if (! yValues.contains (y)) {
       // add the row
       for (Double x : xValues) {
-        var xy = PT (x, y);
+        Tuple xy = PT (x, y);
         domain.add(xy);
         rows.add (new Row (xy, value));
       }
@@ -89,7 +90,7 @@ public class Rows {
     if (! xValues.contains (x)) {
       // add the row
       for (Double y : yValues) {
-        var xy = PT (x, y);
+        Tuple xy = PT (x, y);
         domain.add(xy);
         rows.add (new Row (xy, value));
       }
@@ -131,7 +132,7 @@ public class Rows {
    * @return a string with the database in the same CSV format we read from a table
    */
   public String toString(String xName, String yName, String valueName) {
-    var sb = new  StringBuilder ();
+    StringBuilder sb = new StringBuilder ();
     sb.append("# comment line with date in standard format goes here").append(System.lineSeparator());
     sb.append (xName).append(',').append(yName).append(',').append(valueName).append(System.lineSeparator());
     for (Row row: rows) {

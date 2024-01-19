@@ -47,7 +47,7 @@ public class Product extends ComputedExpressionList {
   @Override
   protected String computeString () {
     return wrap(ListFunc.reduce (expressions, 1, new StringBuilder ().append(expressions.get(0).toString()),
-            (expression, sb) -> sb.append("×").append (expression.toString())), true);
+            (expression, sb) -> sb.append("*").append (expression.toString())), true);
   }
 
   @Override
@@ -186,13 +186,6 @@ public class Product extends ComputedExpressionList {
     if (expressions.size () == 1) {
       return expressions.get (0);
     }
-
-
-
-    // factor out terms?
-
-
-    // - gather all variables and power nodes into ... power nodes (aka terms)
 
     // if the expressions haven't changed, return this, otherwise... if the expressions list has only one
     // item we return that, and finally a new product object based on the list

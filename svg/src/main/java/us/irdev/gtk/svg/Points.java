@@ -15,7 +15,7 @@ public class Points implements Element {
   @Override
   public String emit (Domain domain, Traits traits) {
     // <circle cx="50" cy="50" r="50" />
-    var builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     for (Tuple point: points) {
       builder.append (String.format ("<circle cx=\"%f\" cy=\"%f\" r=\"%f\" fill=\"%s\" stroke=\"%s\" stroke-width=\"%f%%\"/>\n", point.x, point.y, size, traits.fillColor, traits.strokeColor, traits.strokeWeight));
     }

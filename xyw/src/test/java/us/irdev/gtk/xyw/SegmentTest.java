@@ -24,47 +24,47 @@ public class SegmentTest {
 
   @Test
   public void testIntersection() {
-    Segment segment = new Segment (PT(2, 0), PT(0, 2));
-    Segment ray = new Segment (PT(0, 0), PT(2, 2));
+    Segment segment = new Segment (PT (2, 0), PT (0, 2));
+    Segment ray = new Segment (PT (0, 0), PT (2, 2));
     Tuple pt = Segment.intersect (ray, segment);
-    Helper.assertSimilar (PT(1, 1), pt);
+    assertSimilar (PT (1, 1), pt);
     assertTrue(segment.pointIsInSegment (pt));
     assertTrue(ray.pointIsInSegment (pt));
   }
 
   @Test
   public void testLineEquation() {
-    Tuple a = PT(0, 2);
-    Tuple b = PT(1, 1);
+    Tuple a = PT (0, 2);
+    Tuple b = PT (1, 1);
 
     Segment segment = new Segment (a, b);
     Tuple origin = segment.line.origin();
     assertTrue(segment.pointIsInSegment (origin));
 
-    Helper.assertSimilar (Tuple.VEC (-1, -1).normalized (), segment.line.n());
+    assertSimilar (VEC (-1, -1).normalized (), segment.line.n());
 
     assertTrue(segment.line.pointIsOnLine (a));
     assertTrue(segment.line.pointIsOnLine (b));
     assertTrue(segment.line.pointIsOnLine (origin));
 
-    Helper.assertSimilar (segment.line.distanceToPoint (PT(0, 0)), sqrt (2));
+    assertSimilar (segment.line.distanceToPoint (PT (0, 0)), sqrt (2));
 
-    assertTrue(segment.pointIsInSegment (PT(0.5, 1.5)));
-    assertTrue(segment.line.pointIsOnLine (PT(1.5, 0.5)));
-    assertFalse(segment.pointIsInSegment (PT(1.5, 0.5)));
-    assertTrue(segment.line.pointIsOnLine (PT(-0.5, 2.5)));
-    assertFalse(segment.pointIsInSegment (PT(-0.5, 2.5)));
+    assertTrue(segment.pointIsInSegment (PT (0.5, 1.5)));
+    assertTrue(segment.line.pointIsOnLine (PT (1.5, 0.5)));
+    assertFalse(segment.pointIsInSegment (PT (1.5, 0.5)));
+    assertTrue(segment.line.pointIsOnLine (PT (-0.5, 2.5)));
+    assertFalse(segment.pointIsInSegment (PT (-0.5, 2.5)));
   }
 
   @Test
   public void testMidLerp () {
-    Helper.assertSimilar(PT(1, 1), new Segment (PT(0, 0), PT(2, 2)).mid());
-    Helper.assertSimilar(PT(-1, -1), new Segment (PT(0, 0), PT(-2, -2)).mid());
+    assertSimilar(PT (1, 1), new Segment (PT (0, 0), PT (2, 2)).mid());
+    assertSimilar(PT (-1, -1), new Segment (PT (0, 0), PT (-2, -2)).mid());
 
-    Helper.assertSimilar(PT(1, 1), new Segment (PT(0, 0), PT(2, 2)).lerp(0.5));
-    Helper.assertSimilar(PT(-1, -1), new Segment (PT(0, 0), PT(-2, -2)).lerp(0.5));
+    assertSimilar(PT (1, 1), new Segment (PT (0, 0), PT (2, 2)).lerp(0.5));
+    assertSimilar(PT (-1, -1), new Segment (PT (0, 0), PT (-2, -2)).lerp(0.5));
 
-    Helper.assertSimilar(PT(0.5, 0.5), new Segment (PT(0, 0), PT(2, 2)).lerp(0.25));
-    Helper.assertSimilar(PT(-0.5, -0.5), new Segment (PT(0, 0), PT(-2, -2)).lerp(0.25));
+    assertSimilar(PT (0.5, 0.5), new Segment (PT (0, 0), PT (2, 2)).lerp(0.25));
+    assertSimilar(PT (-0.5, -0.5), new Segment (PT (0, 0), PT (-2, -2)).lerp(0.25));
   }
 }
