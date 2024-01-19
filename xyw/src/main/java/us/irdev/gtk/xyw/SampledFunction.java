@@ -14,11 +14,12 @@ import static us.irdev.gtk.xyw.Tuple.PT;
  * grid is supplied.
  */
 public class SampledFunction extends Function {
+  public final Domain rawDomain;
   public final Domain domain;
   public final Tuple interval;
-  private final BoundaryBehavior bbX, bbY;
-  private final int dimX, dimY;
-  private final double[] samples;
+  public final BoundaryBehavior bbX, bbY;
+  protected final int dimX, dimY;
+  protected final double[] samples;
 
   /**
    * Constructor - this raw constructor provides a set of 0 samples
@@ -29,7 +30,7 @@ public class SampledFunction extends Function {
    */
   public SampledFunction (Domain domain, Tuple interval, BoundaryBehavior bbX, BoundaryBehavior bbY) {
     // copy the parameters
-    this.domain = domain;
+    this.rawDomain = domain;
     this.interval = interval;
     this.bbX = bbX;
     this.bbY = bbY;
@@ -45,10 +46,9 @@ public class SampledFunction extends Function {
     assert (Math.abs(((dimY - 1) * interval.y) - size.y) < Numerics.TOLERANCE);
 
     // different boundary behaviors may expand the domain max, so we compute that change here
-    domain.max = PT (
-    domain.max.x + bbX.adjustDomainMax(domain.min.x, domain.max.x, interval.x),
-    domain.max.y + bbY.adjustDomainMax(domain.min.y, domain.max.y, interval.y)
-    );
+    this.domain = new Domain (domain.min, domain.max.add (
+            Tuple.PT(bbX.adjustDomainMax(domain.min.x, domain.max.x, interval.x), bbY.adjustDomainMax(domain.min.y, domain.max.y, interval.y))
+    ));
 
     // create the samples array
     samples = new double[dimX * dimY];
@@ -86,7 +86,7 @@ public class SampledFunction extends Function {
   }
 
   /**
-   * a helper function to create a populated SampledFunction from a "database"
+   * a helper function to create a populated SampledFunction from another Function
    * @param rows an array of numbers representing (x, y, value) triples for each sample
    *                location
    * @param bb boundary behavior for both the x-axis and y-axis
@@ -100,7 +100,7 @@ public class SampledFunction extends Function {
     SampledFunction sf = new SampledFunction (domain, interval, bbX, bbY);
     for (double y = domain.min.y; y <= domain.max.y; y += interval.y) {
       for (double x = domain.min.x; x <= domain.max.x; x += interval.x) {
-        Tuple xy = PT (x, y);
+        Tuple xy = Tuple.PT (x, y);
         sf.putSample (xy, f.f (xy));
       }
     }
@@ -149,7 +149,7 @@ public class SampledFunction extends Function {
   @Override
   public At at (Tuple xy) {
     // condition the input coordinate
-    Tuple cxy = PT (bbX.condition(xy.x, domain.min.x, domain.max.x), bbY.condition(xy.y, domain.min.y, domain.max.y));
+    Tuple cxy = Tuple.PT (bbX.condition(xy.x, domain.min.x, domain.max.x), bbY.condition(xy.y, domain.min.y, domain.max.y));
 
     // map the input coordinate to 4 sampled locations [(x0, y0), (x1, y0), (x0, y1), (x1, y1)] in
     // the sample array space[[0..dimX),[0..dimY)], and compute the interpolators, which should be
@@ -203,7 +203,7 @@ public class SampledFunction extends Function {
     // the form of a set of line segments. our sampled data has different boundary behaviors that
     // complicate things, so this is not the most efficient variant in the sense that a lot of
     // redundant calculations are not re-used as they would be in the traditional implementation.
-    var output = new ArrayList<Segment>();
+    List<Segment> output = new ArrayList<>();
 
     Tuple size = domain.size ();
     Tuple end = size.hquotient (interval).floor ();
@@ -234,52 +234,52 @@ public class SampledFunction extends Function {
             break;
           case 1: case 14: {
             // bottom left corner is different, bottom and left have endpoints
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
+            Tuple left = Tuple.PT (x, Numerics.where(targetValue, y, a, y1, c));
+            Tuple bottom = Tuple.PT (Numerics.where(targetValue, x, a, x1, b), y);
             output.add (new Segment (left, bottom));
           } break;
           case 2: case 13: {
             // bottom right corner is different, bottom and right have endpoints
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
+            Tuple right = Tuple.PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            Tuple bottom = Tuple.PT (Numerics.where(targetValue, x, a, x1, b), y);
             output.add (new Segment (right, bottom));
           } break;
           case 4: case 11: {
             // top left corner is different, top and left have endpoints
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            Tuple left = Tuple.PT (x, Numerics.where(targetValue, y, a, y1, c));
+            Tuple top = Tuple.PT (Numerics.where(targetValue, x, c, x1, d), y1);
             output.add (new Segment (left, top));
           } break;
           case 8: case 7: {
             // top right corner is different, top and right have endpoints
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            Tuple top = Tuple.PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            Tuple right = Tuple.PT (x1, Numerics.where(targetValue, y, b, y1, d));
             output.add (new Segment (right, top));
           } break;
           case 3: case 12: {
             // two bottom corners are different from the two top corners, left and right have endpoints
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            Tuple left = Tuple.PT (x, Numerics.where(targetValue, y, a, y1, c));
+            Tuple right = Tuple.PT (x1, Numerics.where(targetValue, y, b, y1, d));
             output.add (new Segment (left, right));
           } break;
           case 5: case 10: {
             // two left corners are different from the two right corners, bottom and top have endpoints
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            Tuple bottom = Tuple.PT (Numerics.where(targetValue, x, a, x1, b), y);
+            Tuple top = Tuple.PT (Numerics.where(targetValue, x, c, x1, d), y1);
             output.add (new Segment (bottom, top));
           } break;
           case 6: case 9: {
             // saddle point, all 4 edges have endpoints. we have to decide which direction to do 2 lines.
-            Tuple left = PT (x, Numerics.where(targetValue, y, a, y1, c));
-            Tuple right = PT (x1, Numerics.where(targetValue, y, b, y1, d));
-            Tuple bottom = PT (Numerics.where(targetValue, x, a, x1, b), y);
-            Tuple top = PT (Numerics.where(targetValue, x, c, x1, d), y1);
+            Tuple left = Tuple.PT (x, Numerics.where(targetValue, y, a, y1, c));
+            Tuple right = Tuple.PT (x1, Numerics.where(targetValue, y, b, y1, d));
+            Tuple bottom = Tuple.PT (Numerics.where(targetValue, x, a, x1, b), y);
+            Tuple top = Tuple.PT (Numerics.where(targetValue, x, c, x1, d), y1);
 
             // a good heuristic to resolve the ambiguity here is to choose the shortest combined pair
-            var leftTop = new  Segment (left, top);
-            var leftBottom = new  Segment (left, bottom);
-            var rightTop = new  Segment (right, top);
-            var rightBottom = new  Segment (right, bottom);
+            Segment leftTop = new Segment (left, top);
+            Segment leftBottom = new Segment (left, bottom);
+            Segment rightTop = new Segment (right, top);
+            Segment rightBottom = new Segment (right, bottom);
 
             if ((leftTop.lengthSq() + rightBottom.lengthSq()) < (leftBottom.lengthSq() + rightTop.lengthSq())) {
               output.add (leftTop);
@@ -356,7 +356,7 @@ public class SampledFunction extends Function {
    * @return the improved estimate
    */
   public Tuple refineSampleLocation (double x, double y, double targetValue, int steps) {
-    return refineSampleLocation(PT (x, y), targetValue, steps);
+    return refineSampleLocation(Tuple.PT (x, y), targetValue, steps);
   }
 
   /**
@@ -401,7 +401,7 @@ public class SampledFunction extends Function {
    *
    */
   public List<Segment> refineSegments (List<Segment> segments, double targetValue, double maxSegmentLength) {
-    var output = new ArrayList<Segment>();
+    List<Segment> output = new ArrayList<>();
     for (Segment segment: segments) {
       refineSegment(segment, targetValue, maxSegmentLength, output);
     }
@@ -412,21 +412,16 @@ public class SampledFunction extends Function {
   // compute iso-crossings
   // -----------------------------------------------------------------------------------------------
   public static class Crossing {
-    public double x;
-    public Tuple loc;
-    public double value;
-    public boolean above;
+    public final double x;
+    public final Tuple loc;
+    public final double value;
+    public final boolean above;
 
     public Crossing (double x, Tuple loc, double value, boolean above) {
       this.x = x;
       this.loc = loc;
       this.value = value;
       this.above = above;
-    }
-
-    // so we can sort a list of these by x
-    public double getX () {
-      return x;
     }
 
     public static Crossing merge (Crossing a, Crossing b) {
@@ -517,7 +512,7 @@ public class SampledFunction extends Function {
    * @return a list of the roots found, or null if none are found
    */
   public List<Crossing> findCrossings(TupleFunctionAt tfa, double xa, double xb, double targetValue, int crossings) {
-    var output = new ArrayList<Crossing>();
+    List<Crossing> output = new ArrayList<>();
 
     // divide the search range into smaller parts based on the crossings hint, loop over each subsegment separately
     double delta = xb - xa;

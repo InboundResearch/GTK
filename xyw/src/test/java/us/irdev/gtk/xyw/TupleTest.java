@@ -1,19 +1,18 @@
 package us.irdev.gtk.xyw;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static us.irdev.gtk.xyw.Helper.assertNotSimilar;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.Tuple.VEC;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TupleTest {
 
   @Test
   public void testConstructor() {
-    var tuple = new  Tuple (0, 0, 0);
+    Tuple tuple = new Tuple (0, 0, 0);
     assertEquals(0, tuple.x);
     assertEquals(0, tuple.y);
     assertEquals(0, tuple.w);
@@ -36,25 +35,25 @@ public class TupleTest {
 
   @Test
   public void testEquals() {
-    var a = VEC (2.0, 3.5);
-    var b = VEC (4.0, 7.0);
-    var c = VEC (2.0, 3.5);
-    assertNotSimilar(a, b);
-    assertNotSimilar(b, c);
-    assertSimilar(a, c);
+    Tuple a = VEC (2.0, 3.5);
+    Tuple b = VEC (4.0, 7.0);
+    Tuple c = VEC (2.0, 3.5);
+    Helper.assertNotSimilar(a, b);
+    Helper.assertNotSimilar(b, c);
+    Helper.assertSimilar(a, c);
 
-    var d = PT (2.15, 3.6);
-    assertNotSimilar (a, d);
+    Tuple d = PT (2.15, 3.6);
+    Helper.assertNotSimilar (a, d);
 
     // XXX this needs a bit more thought to create a test that actually exercises similarity...
-    var e = a.add(b).scale(2.0).scale(3.0).scale(1.0 / 2.0).scale(1.0 / 3.0).subtract(b);
-    assertSimilar(e, a);
+    Tuple e = a.add(b).scale(2.0).scale(3.0).scale(1.0 / 2.0).scale(1.0 / 3.0).subtract(b);
+    Helper.assertSimilar(e, a);
   }
 
   @Test
   public void testMath() {
-    var a = VEC (2.0, 3.5);
-    var b = VEC (4.0, 7.0);
+    Tuple a = VEC (2.0, 3.5);
+    Tuple b = VEC (4.0, 7.0);
     assertSimilar(a.add (a), b);
     assertSimilar(b.subtract (a), a);
     assertSimilar(a.subtract (b).abs(), a);
@@ -62,8 +61,8 @@ public class TupleTest {
 
   @Test
   public void testToString() {
-    Assertions.assertEquals(Tuple.VEC (1.2, 1).toString(), "(1.200000, 1.000000, 0.000000)");
-    Assertions.assertEquals(PT(-1.2, 1).toString(), "(-1.200000, 1.000000, 1.000000)");
+    assertEquals(VEC (1.2, 1).toString(), "(1.200000, 1.000000, 0.000000)");
+    assertEquals(PT (-1.2, 1).toString(), "(-1.200000, 1.000000, 1.000000)");
   }
 
   // XXX test hquotient and hinverse for division by 0

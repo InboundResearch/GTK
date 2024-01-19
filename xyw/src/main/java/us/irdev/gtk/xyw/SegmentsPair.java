@@ -57,7 +57,7 @@ public class SegmentsPair {
   }
 
   public List<SegmentsPair> partition() {
-    var output = new ArrayList<SegmentsPair>();
+    List<SegmentsPair> output = new ArrayList<>();
     List<Segments> lA = a.partition();
     List<Segments> lB = b.partition();
 
@@ -74,7 +74,7 @@ public class SegmentsPair {
   }
 
   public List<Tuple> intersections () {
-    var result = new ArrayList<Tuple>();
+    List<Tuple> result = new ArrayList<>();
     for (Segment sa: a.segments) {
       for (Segment sb: b.segments) {
         Tuple intersection = Segment.intersect (sa, sb);
@@ -87,7 +87,7 @@ public class SegmentsPair {
   }
 
   public static List<Tuple> intersections(List<SegmentsPair> pairs) {
-    var result = new ArrayList<Tuple>();
+    List<Tuple> result = new ArrayList<>();
     for (SegmentsPair pair: pairs) {
       List<Tuple> pairIntersections = pair.intersections();
       if (pairIntersections != null) {

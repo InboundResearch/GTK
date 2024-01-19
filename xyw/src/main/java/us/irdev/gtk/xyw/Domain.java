@@ -1,17 +1,24 @@
 package us.irdev.gtk.xyw;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
+
 import static us.irdev.gtk.xyw.Tuple.PT;
 
 public class Domain {
-  public Tuple min;
-  public Tuple max;
+  private static final Logger log = LogManager.getLogger(Domain.class);
+
+  public final Tuple min;
+  public final Tuple max;
 
   /**
    * default constructor - start with a deliberately empty domain (contains nothing)
    */
   public Domain () {
-    min = PT(Double.MAX_VALUE, Double.MAX_VALUE);
-    max = PT(-Double.MAX_VALUE, -Double.MAX_VALUE);
+    min = Tuple.PT (Double.MAX_VALUE, Double.MAX_VALUE);
+    max = Tuple.PT (-Double.MAX_VALUE, -Double.MAX_VALUE);
   }
 
   /**
@@ -21,10 +28,9 @@ public class Domain {
    * @param pts variable length argument list of points to add
    */
   public Domain (Tuple ... pts) {
-    this();
-    for (Tuple pt: pts) {
-      add (pt);
-    }
+    Tuple[] partialPts = Arrays.copyOfRange(pts, 1, pts.length);
+    min = Arrays.stream (partialPts).reduce (pts[0], (a, b) -> Tuple.PT(Math.min (a.x, b.x), Math.min (a.y, b.y)));
+    max = Arrays.stream (partialPts).reduce (pts[0], (a, b) -> Tuple.PT(Math.max (a.x, b.x), Math.max (a.y, b.y)));
   }
 
   /**
@@ -36,8 +42,8 @@ public class Domain {
    * @param maxY max bound in the Y-axis
    */
   public Domain (double minX, double maxX, double minY, double maxY) {
-    min = PT(minX, minY);
-    max = PT(maxX, maxY);
+    min = Tuple.PT (minX, minY);
+    max = Tuple.PT (maxX, maxY);
   }
 
   /**
@@ -46,9 +52,7 @@ public class Domain {
    * @return self-reference so this call can be chained
    */
   public Domain add(Tuple pt) {
-    min = PT(Math.min(min.x, pt.x), Math.min(min.y, pt.y));
-    max = PT(Math.max(max.x, pt.x), Math.max(max.y, pt.y));
-    return this;
+    return new Domain (Math.min(min.x, pt.x), Math.max(max.x, pt.x), Math.min(min.y, pt.y), Math.max(max.y, pt.y));
   }
 
   /**
@@ -361,11 +365,11 @@ public class Domain {
         }
 
         default:
-          System.err.printf ("Invalid code: 0b%8b%n", cC);
+          log.error (String.format("Invalid code: 0b%8b", cC));
           return false;
       }
     }
-    System.err.print ("Unknown failure");
+    log.error ("Unknown failure");
     return false;
   }
 

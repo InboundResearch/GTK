@@ -1,5 +1,7 @@
 package us.irdev.gtk.xyw;
 
+import us.irdev.gtk.functional.ListFunc;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,15 +13,11 @@ public class Segments {
   public Segments (List<Segment> segments) {
     this.segments = segments;
     length = segments.size();
-    domain = new Domain ();
-    for (Segment segment: segments) {
-      domain.add(segment.a);
-      domain.add(segment.b);
-    }
+    domain = ListFunc.reduce(segments, new Domain(), (segment, domain) -> domain.add(segment.a).add(segment.b));
   }
 
   public static Segments join (Segments a, Segments b) {
-    var segments = new ArrayList<Segment>(a.segments.size() + b.segments.size());
+    List<Segment> segments = new ArrayList<>(a.segments.size() + b.segments.size());
     // XXX do we need to consider whether there are any duplicate segments?
     segments.addAll(a.segments);
     segments.addAll(b.segments);
@@ -27,7 +25,7 @@ public class Segments {
   }
 
   public static List<Segment> clipToLine (List<Segment> segments, Line line, int... keeps) {
-    var result = new ArrayList<Segment> ();
+    List<Segment> result = new ArrayList<> ();
     if (segments != null) {
       for (Segment segment : segments) {
         Segment.Clip clip = segment.clipToLine (line);
@@ -66,7 +64,7 @@ public class Segments {
   }
 
   public static List<Segment> trimToDomain (List<Segment> segments, Domain domain) {
-    var result = new ArrayList<Segment>();
+    List<Segment> result = new ArrayList<>();
     for (Segment segment: segments) {
       if (domain.contains(segment)) {
         result.add(segment);
@@ -84,14 +82,14 @@ public class Segments {
     int segmentsSize = segments.size();
     int partitionSize = Math.max (1, (int) Math.sqrt (segmentsSize));
     int partitionCount = (segmentsSize / partitionSize) + (((segmentsSize % partitionSize) > 0) ? 1 : 0);
-    var output = new ArrayList<Segments>(partitionCount);
+    List<Segments> output = new ArrayList<>(partitionCount);
     for (int i = 0, start = 0; i < partitionCount; ++i, start += partitionSize) {
       output.add (new Segments (segments.subList (start, Math.min (start + partitionSize, segmentsSize - 1))));
     }
     return output;
   }
 
-  interface TupleFunction {
+ public interface TupleFunction {
     Tuple value(double x);
   }
 

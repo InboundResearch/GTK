@@ -368,6 +368,7 @@
 
   <!-- child projects to build separate jars for each of these dependencies -->
   <modules>
+    <module>functional</module>
     <module>io</module>
     <module>svg</module>
     <module>xyw</module>

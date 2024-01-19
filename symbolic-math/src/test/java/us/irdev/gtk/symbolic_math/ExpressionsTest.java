@@ -13,7 +13,7 @@ public class ExpressionsTest {
   @Test
   public void testTerm () {
     Expression expr = Expressions.add(Expressions.term(3, "x", 2), Expressions.term(2, "x"), Expressions.term (5)).simplify ();
-    assertEquals("((3×(x^2))+(2×x)+5)", expr.toString ());
+    assertEquals("((3*(x^2))+(2*x)+5)", expr.toString ());
     assertEquals("3x² + 2x + 5", expr.prettyString ());
     Set<String> deps = expr.getDependencies();
     assertEquals(1, deps.size());
@@ -47,7 +47,7 @@ public class ExpressionsTest {
     assertEquals(1, deps.size());
     assertTrue(deps.contains(x));
 
-    assertEquals ("(((x^2)+(3×x))/(x+4))", expr.toString());
+    assertEquals ("(((x^2)+(3*x))/(x+4))", expr.toString());
     assertEquals ("(x² + 3x) / (x + 4)", expr.prettyString());
     assertEquals ("(x² + 8x + 12) / (x² + 8x + 16)", d.prettyString());
 

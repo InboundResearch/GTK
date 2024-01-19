@@ -1,6 +1,5 @@
 package us.irdev.gtk.xyw;
 
-import org.junit.jupiter.api.Test;
 import us.irdev.gtk.io.Table;
 import us.irdev.gtk.io.Utility;
 import us.irdev.gtk.svg.Axis;
@@ -13,35 +12,36 @@ import us.irdev.gtk.xyw.bb.BoundaryBehaviorValue;
 import us.irdev.gtk.xyw.bb.BoundaryBehaviorWrap;
 import us.irdev.gtk.xyw.db.Row;
 import us.irdev.gtk.xyw.db.Rows;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static us.irdev.gtk.xyw.Assertions.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.Tuple.VEC;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SampledFunctionTest {
   private static Rows fromArray(double[] array) {
     List<Row> rows = new ArrayList<>();
     for (int i = 0; i < array.length; i += 3) {
-      rows.add (new Row (PT(array[i], array[i + 1]), array[i + 2]));
+      rows.add (new Row (PT (array[i], array[i + 1]), array[i + 2]));
     }
     return new Rows (rows);
   }
 
   private List<Segment> getRefinedIso(SampledFunction function, double iso) {
-    var segments = function.iso(iso);
+    List<Segment> segments = function.iso(iso);
     segments = function.refineSegments(segments, iso, 1.0);
     return segments;
   }
 
   private void drawSvg(String name, SampledFunction function) {
     // add a svg file to show the result
-    var frame = new Frame (function.domain)
+    Frame frame = new Frame (function.domain)
             .begin (new Traits (0.1, "#bbb", "none"))
             .element(new Grid (18, 18))
             .begin (new Traits (0.25, "#444", "none"))
@@ -49,16 +49,16 @@ public class SampledFunctionTest {
             .begin (new Traits (0.25, "#070", "none"))
             .poly (getRefinedIso(function, 0))
             .begin (new Traits (0.25, "#007", "none"));
-    for (var i = 1; i < 18; ++i) {
+    for (int i = 1; i < 18; ++i) {
       frame.poly (getRefinedIso (function, i * 5.0));
     }
     frame
             .begin (new Traits (0.25, "#700", "none"));
-    for (var i = 1; i < 18; ++i) {
+    for (int i = 1; i < 18; ++i) {
       frame.poly (getRefinedIso (function, i * -5.0));
     }
     frame.end();
-    var svg = frame.emitSvg(name, 800);
+    String svg = frame.emitSvg(name, 800);
     Utility.writeFile(Paths.get("output", name + ".svg").toString(), svg);
   }
 
@@ -87,14 +87,14 @@ public class SampledFunctionTest {
 
   @Test
   public void testFromDatabase() {
-    var array = new  double[]{
+    double[] array = new double[]{
             -1.0, -1.0, 0.0,   0.0, -1.0, 0.0,   1.0, -1.0, 0.0,
             -1.0,  0.0, 1.0,   0.0,  0.0, 1.0,   1.0,  0.0, 1.0,
             -1.0,  1.0, 2.0,   0.0,  1.0, 2.0,   1.0,  1.0, 2.0
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorWrap ());
-    Assertions.assertSimilar (function.domain, new Domain(PT(-1, -1), PT(2, 2)));
+    assertSimilar (function.domain, new Domain(PT (-1, -1), PT (2, 2)));
 
     // test the actual sample points
     assertEquals(0.0, function.f (-1.0, -1.0));
@@ -156,9 +156,9 @@ public class SampledFunctionTest {
 
   private void verifyList(Segment[] expectArray, List<Segment> verifyList) {
     assertEquals(expectArray.length, verifyList.size());
-    var verifiedCount = 0;
-    for (var expect: expectArray) {
-      for (var verify : verifyList) {
+    int verifiedCount = 0;
+    for (Segment expect: expectArray) {
+      for (Segment verify : verifyList) {
         verifiedCount += Segment.similar(verify, expect) ? 1 : 0;
       }
     }
@@ -167,16 +167,16 @@ public class SampledFunctionTest {
 
   @Test
   public void testIso() {
-    var array = new  double[]{
+    double[] array = new double[]{
             -1.0, -1.0, 0.0,   0.0, -1.0, 0.0,   1.0, -1.0, 0.0,
             -1.0,  0.0, 0.0,   0.0,  0.0, 1.0,   1.0,  0.0, 0.0,
             -1.0,  1.0, 0.0,   0.0,  1.0, 0.0,   1.0,  1.0, 0.0
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
-    Assertions.assertSimilar (function.domain, new Domain(PT(-1, -1), PT(1, 1)));
+    assertSimilar (function.domain, new Domain(PT (-1, -1), PT (1, 1)));
 
-    var segments = function.iso(0.5);
+    List<Segment> segments = function.iso(0.5);
     verifyList(new Segment[]{
             new Segment (0, 0.5, 0.5, 0),
             new Segment (0, -0.5, 0.5, 0),
@@ -196,16 +196,16 @@ public class SampledFunctionTest {
 
   @Test
   public void testRefinedIsoWrap() {
-    var array = new  double[]{
+    double[] array = new double[]{
             -1.0, -1.0, 0.0,   0.0, -1.0, 0.0,
             -1.0,  0.0, 0.0,   0.0,  0.0, 1.0,
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorWrap ());
-    Assertions.assertSimilar (function.domain, new Domain(PT(-1, -1), PT(1, 1)));
+    assertSimilar (function.domain, new Domain(PT (-1, -1), PT (1, 1)));
 
-    var targetValue = 0.5;
-    var segments = function.iso(targetValue);
+    double targetValue = 0.5;
+    List<Segment> segments = function.iso(targetValue);
     verifyList(new Segment[]{
             new Segment (0, 0.5, 0.5, 0),
             new Segment (0, -0.5, 0.5, 0),
@@ -218,7 +218,7 @@ public class SampledFunctionTest {
     assertEquals(16, segments.size());
 
     // collect the segments into a single polyline
-    var polyLines = PolyLine.polyLinesFromSegments (segments);
+    List<PolyLine> polyLines = PolyLine.polyLinesFromSegments (segments);
     assertEquals(1, polyLines.size());
 
     PolyLine polyLine = polyLines.get(0);
@@ -241,7 +241,7 @@ public class SampledFunctionTest {
      *       o----------|----------|----------|-----> X
      *                 10         20         30
      */
-    var array = new  double[]{
+    double[] array = new double[]{
             10, 1, 1,    20, 1, 3,    30, 1, 5,
             10, 2, 1,    20, 2, 2,    30, 2, 3
     };
@@ -284,7 +284,7 @@ public class SampledFunctionTest {
      *       o----------|----------|-----> X
      *                 20         30
      */
-    var array = new  double[]{
+    double[] array = new double[]{
             20, 1, 1,    30, 1, 3,
             20, 2, 2,    30, 2, 4
     };
@@ -299,23 +299,23 @@ public class SampledFunctionTest {
 
   @Test
   public void testHyperbolicParaboloid() {
-    var array = new  double[]{
+    double[] array = new double[]{
             0, 0, 0,    1, 0, 0,
             0, 1, 0,    1, 1, 1
     };
-    var rows = fromArray(array);
-    var function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
+    Rows rows = fromArray(array);
+    SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
 
     // verify the iso-line we get for the target value of 0.5 is a straight line from the midpoint
     // of two edges.
-    var targetValue = 0.5;
-    var segments = function.iso (targetValue);
+    double targetValue = 0.5;
+    List<Segment> segments = function.iso (targetValue);
     assertEquals(1, segments.size());
 
-    var iso = PolyLine.polyLinesFromSegments (segments).get(0);
+    PolyLine iso = PolyLine.polyLinesFromSegments (segments).get(0);
     assertEquals(2, iso.getPoints().length);
-    Assertions.assertSimilar(PT(0.5, 1), iso.getPoints()[0]);
-    Assertions.assertSimilar(PT(1, 0.5), iso.getPoints()[1]);
+    assertSimilar(PT (0.5, 1), iso.getPoints()[0]);
+    assertSimilar(PT (1, 0.5), iso.getPoints()[1]);
 
     // verify that a point on that straight line is not a correct approximation of the bilinear
     // interpolation (ruled surface)
@@ -329,7 +329,7 @@ public class SampledFunctionTest {
 
     // now try to refine the original midpoint to see if we get the correct value
     Tuple refined = function.refineSampleLocation(midpoint, midpoint, targetValue);
-    Assertions.assertSimilar(refined, PT(coord, coord));
+    assertSimilar(refined, PT (coord, coord));
   }
 
 
@@ -355,39 +355,39 @@ public class SampledFunctionTest {
 
     @Override
     public Tuple at (double x) {
-      return PT(x, (Math.sin(x * Math.PI * 2.0 * count) + 1.0) * 0.5 * scale);
+      return PT (x, (Math.sin(x * Math.PI * 2.0 * count) + 1.0) * 0.5 * scale);
     }
   }
 
   @Test
   public void testFindCrossing() {
-    var array = new  double[]{
+    double[] array = new double[]{
             0, 0, 0,    1, 0, 0,
             0, 1, 1,    1, 1, 1
     };
     Rows rows = fromArray(array);
     SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
     SampledFunction.Crossing crossing = function.findCrossing(new TupleFunctionAtAdapter(), 0.31, 0.71, 0.5);
-    Assertions.assertSimilar (0.5, crossing.x);
-    Assertions.assertSimilar (PT(0.5, 0.5), crossing.loc);
-    Assertions.assertSimilar (0.5, crossing.value);
+    assertSimilar (0.5, crossing.x);
+    assertSimilar (PT (0.5, 0.5), crossing.loc);
+    assertSimilar (0.5, crossing.value);
   }
 
   @Test
   public void testFindCrossings() {
-    var array = new  double[]{
+    double[] array = new double[]{
             0, 0, 0,    1, 0, 0,
             0, 1, 1,    1, 1, 1
     };
-    var rows = fromArray(array);
-    var function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
-    var crossings = function.findCrossings(new TupleFunctionAtAdapter(1.25), 0.31, 0.91, 0.5, 2);
+    Rows rows = fromArray(array);
+    SampledFunction function = SampledFunction.fromDatabase (rows, new BoundaryBehaviorValue ());
+    List<SampledFunction.Crossing> crossings = function.findCrossings(new TupleFunctionAtAdapter(1.25), 0.31, 0.91, 0.5, 2);
     assertEquals(2, crossings.size());
-    Assertions.assertSimilar (0.4, crossings.get(0).x);
-    Assertions.assertSimilar (0.8, crossings.get(1).x);
+    assertSimilar (0.4, crossings.get(0).x);
+    assertSimilar (0.8, crossings.get(1).x);
 
-    Assertions.assertSimilar (0.5, crossings.get(0).value, 1);
-    Assertions.assertSimilar (0.5, crossings.get(1).value, 1);
+    assertSimilar (0.5, crossings.get(0).value, 1);
+    assertSimilar (0.5, crossings.get(1).value, 1);
 
     assertTrue (crossings.get (0).above);
     assertFalse (crossings.get (1).above);
@@ -396,15 +396,15 @@ public class SampledFunctionTest {
   @Test
   public void testWithValue() {
     Domain domain = new Domain (-180, 175, -90, 90);
-    Tuple interval = Tuple.VEC (5, 5);
+    Tuple interval = VEC (5, 5);
     // simple perfectly horizontal isolines, scaled down just a bit
     Rows db = Rows.fromFxy (domain, interval, xy -> xy.y);
     SampledFunction function = SampledFunction.fromDatabase (db, new BoundaryBehaviorWrap (), new BoundaryBehaviorAccordion ());
     List<Segment> segments = function.iso (0.5);
     for (Segment segment: segments) {
       // verify the found y coordinate is actally a little above the iso value, since we scaled it
-      Assertions.assertSimilar(0.5, segment.a.y);
-      Assertions.assertSimilar(segment.a.y, segment.b.y);
+      assertSimilar(0.5, segment.a.y);
+      assertSimilar(segment.a.y, segment.b.y);
     }
 
     drawSvg("testWithValue", function);
@@ -414,15 +414,15 @@ public class SampledFunctionTest {
   @Test
   public void testWithNoGradient() {
     Domain domain = new Domain (-180, 175, -90, 90);
-    Tuple interval = Tuple.VEC (5, 5);
+    Tuple interval = VEC (5, 5);
     // simple perfectly horizontal isolines, scaled down just a bit
     Rows db = Rows.fromFxy (domain, interval, xy -> xy.y * 0.95);
     SampledFunction function = SampledFunction.fromDatabase (db, new BoundaryBehaviorWrap (), new BoundaryBehaviorAccordion ());
     List<Segment> segments = function.iso (0.5);
     for (Segment segment: segments) {
       // verify the found y coordinate is actally a little above the iso value, since we scaled it
-      Assertions.assertSimilar(0.5 / 0.95, segment.a.y);
-      Assertions.assertSimilar(segment.a.y, segment.b.y);
+      assertSimilar(0.5 / 0.95, segment.a.y);
+      assertSimilar(segment.a.y, segment.b.y);
     }
 
     drawSvg("testWithNoGradient", function);
@@ -432,7 +432,7 @@ public class SampledFunctionTest {
   @Test
   public void testWithSinusoidal() {
     Domain domain = new Domain (-180, 175, -90, 90);
-    Tuple interval = Tuple.VEC (5, 5);
+    Tuple interval = VEC (5, 5);
     Rows db = Rows.fromFxy (domain, interval, xy -> (xy.y * 0.95) + (3 * Math.cos(1 + Math.toRadians(xy.x) * 2)));
     SampledFunction function = SampledFunction.fromDatabase (db, new BoundaryBehaviorWrap (), new BoundaryBehaviorAccordion ());
     List<Segment> segments = function.iso (0.5);

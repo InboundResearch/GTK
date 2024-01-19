@@ -15,4 +15,17 @@
   <description>Geometry Tool Kit (GTK) - Symbolic Math</description>
   <packaging>jar</packaging>
 
+  <dependencies>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>functional</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>io</artifactId>
+      <version>${gtk.version}</version>
+    </dependency>
+  </dependencies>
+
 </project>

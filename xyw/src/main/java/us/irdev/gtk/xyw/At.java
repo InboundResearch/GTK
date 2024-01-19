@@ -9,6 +9,6 @@ public class At {
   public At(Tuple xy, double f, double dx, double dy) {
     this.xy = xy;
     this.f = f;
-    this.dxdy = Tuple.VEC (dx, dy);
+    this.dxdy = VEC (dx, dy);
   }
 }
