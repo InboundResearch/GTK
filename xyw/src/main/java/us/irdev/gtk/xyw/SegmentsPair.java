@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * a utility class for computing intersections between pairs of Segment objects
+ * a utility class for computing intersections between pairs of Segments objects
  */
 public class SegmentsPair {
   public final Segments a;

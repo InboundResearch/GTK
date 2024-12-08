@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class SegmentsPairTest {
   @Test
   public void testReduce() {
-    // generate a bunch of points in a sinusoidal line
+    // generate a bunch of points in a pair of straight lines
     Segments a = Segments.fromTupleFunction (-10, 10, 0.1, x -> PT(x, x * 0.1));
     Segments b = Segments.fromTupleFunction (-10, 10, 0.1, x -> PT(x * 0.1, x + 2));
 
@@ -39,6 +39,7 @@ public class SegmentsPairTest {
   @Test
   public void testIntersectionPathological() {
     SegmentsPair raw = rawPathological();
+    assertNotNull (raw);
     List<Tuple> result = raw.reduce().intersections ();
   }
 }

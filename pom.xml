@@ -20,7 +20,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <gtk.version>1.0.1-SNAPSHOT</gtk.version>
+    <gtk.version>1.0.2</gtk.version>
   </properties>
 
   <scm>
@@ -37,6 +37,7 @@
     <module>svg</module>
     <module>xyw</module>
     <module>xyw-test</module>
+    <module>geography</module>
     <module>symbolic-math</module>
     <module>system-test</module>
   </modules>
