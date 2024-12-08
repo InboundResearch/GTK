@@ -7,7 +7,7 @@
   <parent>
     <groupId>us.irdev</groupId>
     <artifactId>ir-pom</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
     <relativePath />
   </parent>
 
@@ -20,10 +20,15 @@
   <packaging>pom</packaging>
 
   <properties>
-    <gtk.version>1.0.0-SNAPSHOT</gtk.version>
+    <gtk.version>1.0.1-SNAPSHOT</gtk.version>
   </properties>
 
-  <!-- the GTK release process does not use the maven release plugin, so we do not have a scm node -->
+  <scm>
+    <connection>scm:git:ssh://git@github.com:InboundResearch/GTM.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:InboundResearch/GTM.git</developerConnection>
+    <url>https://github.com/InboundResearch/GTK</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <!-- child projects to build separate jars for each of these dependencies -->
   <modules>
