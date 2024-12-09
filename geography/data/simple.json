@@ -1,0 +1,25 @@
+{
+ "type": "FeatureCollection",
+ "features": [  {
+   "_id": "simple",
+   "type": "Feature",
+   "properties": {
+    "name": "Simple",
+    "abbreviation": "TS",
+    "capital": "Austin",
+    "city": "Houston",
+    "population": 26448193,
+    "area": 695660,
+    "waterarea": 19075,
+    "landarea": 676588,
+    "houseseats": 36,
+    "statehood": "1845-12-29",
+    "group": "US States"
+   },
+   "geometry": {
+    "coordinates": [ [ [ -10.0, 20.0 ], [ -20.0, 20.0 ], [ -20.0, 10.0 ], [ -10.0, 10.0 ], [ -10.0, 20.0 ] ] ],
+    "type": "Polygon"
+   }
+  }
+ ]
+}

@@ -7,10 +7,10 @@ import java.util.List;
 
 public class RingArray {
     public final Segments boundary;
-    public final Segments[] holes;
+    public final List<Segments> holes;
     public RingArray(List<Segments> segmentsList) {
         boundary = segmentsList.get(0);
-        holes = segmentsList.subList (1, segmentsList.size()).toArray(new Segments[segmentsList.size() - 1]);
+        holes = segmentsList.subList (1, segmentsList.size());
     }
 
     private static boolean segmentsContains (Segments source, Segments test) {
@@ -25,7 +25,7 @@ public class RingArray {
         // test the boundary, and if that passes, test the holes for exclusion
         if (segmentsContains (boundary, segments)) {
             for (Segments hole : holes) {
-                if (!segmentsContains(hole, segments)) {
+                if (segmentsContains(hole, segments)) {
                     return false;
                 }
             }
