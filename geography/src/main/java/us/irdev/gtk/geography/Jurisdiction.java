@@ -1,14 +1,24 @@
 package us.irdev.gtk.geography;
 
+import us.irdev.gtk.xyw.Tuple;
+
 import java.util.List;
 
 public class Jurisdiction {
-    private GeoJson geo;
-    private List<Jurisdiction> children;
+    public final GeoJson geo;
+    public final List<Jurisdiction> children;
 
-    public Jurisdiction(GeoJson geo) {
+    public Jurisdiction(GeoJson geo, List<Jurisdiction> children) {
         this.geo = geo;
+        this.children = children;
+
+        // XXX create the grid hash
     }
+
+    public void enumerate (Tuple pt, List<Jurisdiction> results) {
+    }
+
+
 
 
     // future design features:

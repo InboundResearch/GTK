@@ -18,6 +18,18 @@
   <dependencies>
     <dependency>
       <groupId>us.irdev.gtk</groupId>
+      <artifactId>functional</artifactId>
+      <version>${gtk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
+      <artifactId>svg</artifactId>
+      <version>${gtk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>us.irdev.gtk</groupId>
       <artifactId>xyw</artifactId>
       <version>${gtk.version}</version>
     </dependency>
