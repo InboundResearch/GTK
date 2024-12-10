@@ -44,17 +44,9 @@ public class GeoJsonTest {
       //domain = new Domain(-180, 0, 0, 90);
     }
 
-    // compute offsets to start the grid on a multiple of SVG_GRID_DEGREES
-
-    double xOffset = computeOffset(domain.min.x, SVG_GRID_DEGREES);
-    double yOffset = computeOffset(domain.min.y, SVG_GRID_DEGREES);
-
-    int xSteps = computeSteps(domain.min.x, domain.max.x, SVG_GRID_DEGREES);
-    int ySteps = computeSteps(domain.min.y, domain.max.y, SVG_GRID_DEGREES);
-
     var frame = new Frame(domain)
             .begin (new Traits(0.05, "#888", "none"))
-            .element(new Grid(VEC(5.0, 5.0)))
+            .element(new Grid(VEC(3.0, 3.0)))
             .begin (new Traits(0.1, "#444", "none"))
             .element(new Axis());
 
@@ -78,7 +70,7 @@ public class GeoJsonTest {
   @Test
   public void testSimple() {
     var geoJsonList = GeoJson.read (Paths.get("data", "simple.json").toString());
-    drawSvg ("simple", geoJsonList, new Domain(-30, 0, 0, 30));
+    drawSvg ("simple", geoJsonList, new Domain(-25, -5, 5, 25));
     assertEquals(1, geoJsonList.size());
     var geoJson = geoJsonList.get(0);
     assertEquals ("Simple", geoJson.properties.getString("name"));
@@ -98,7 +90,7 @@ public class GeoJsonTest {
   @Test
   public void testSimpleWithHole() {
     var geoJsonList = GeoJson.read (Paths.get("data", "simple_with_hole.json").toString());
-    drawSvg ("simple_with_hole", geoJsonList, new Domain(-30, 0, 0, 30));
+    drawSvg ("simple_with_hole", geoJsonList, new Domain(-25, -5, 5, 25));
     assertEquals(1, geoJsonList.size());
     var geoJson = geoJsonList.get(0);
     assertEquals ("Simple With Hole", geoJson.properties.getString("name"));
