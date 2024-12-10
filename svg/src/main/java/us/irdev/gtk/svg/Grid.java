@@ -46,7 +46,7 @@ public class Grid implements Element {
 
     // compute the size of the domain, the bottom left of the grid, and the number of steps
     Tuple size = domain.size();
-    Tuple bottomLeft = domain.min.hquotient (spacing).floor().hproduct (spacing);
+    Tuple bottomLeft = domain.min.hquotient (spacing).ceil().hproduct (spacing);
     Tuple stepCount = size.hquotient (spacing).ceil();
 
     // emit the vertical axis lines, starting with the first grid line >= left of the domain
