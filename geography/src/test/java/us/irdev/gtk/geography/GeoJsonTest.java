@@ -40,7 +40,7 @@ public class GeoJsonTest {
 
   private void drawSvg(String name, List<GeoJson> geoJsonList, Domain domain) {
     if (domain == null) {
-      domain = ListFunc.reduce(geoJsonList, new Domain(), (geoJson, dom) -> Domain.union (geoJson.domain, dom));
+      domain = ListFunc.reduce(geoJsonList, new Domain(), (geoJson, dom) -> Domain.union (geoJson.domain, dom)).pad(VEC(1, 1));
       //domain = new Domain(-180, 0, 0, 90);
     }
 
@@ -115,7 +115,7 @@ public class GeoJsonTest {
   @Test
   public void testTexas() {
     var geoJsonList = GeoJson.read (Paths.get("data", "texas.json").toString());
-    drawSvg ("texas", geoJsonList, new Domain(-110, -91, 25, 40));
+    drawSvg ("texas", geoJsonList, null);
     assertEquals(1, geoJsonList.size());
     var geoJson = geoJsonList.get(0);
     assertEquals ("Texas", geoJson.properties.getString("name"));
