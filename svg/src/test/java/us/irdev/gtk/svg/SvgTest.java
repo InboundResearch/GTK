@@ -7,13 +7,14 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Paths;
 
 import static us.irdev.gtk.xyw.Tuple.PT;
+import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class SvgTest {
   @Test
   public void testSvg() {
     Frame frame = new Frame (new Domain (-180, 180, -90, 90))
             .begin(new Traits (0.1, "#aaa", "none"))
-            .element (new Grid (8, 4))
+            .element (new Grid (VEC(22.5, 22.5)))
             .end()
             .begin(new Traits(0.5, "#700", "none"))
             .line (PT(0, -10), PT(90, 80))

@@ -49,6 +49,10 @@ public class Tuple {
     return new Tuple (Math.floor(x), Math.floor(y), Math.floor(w));
   }
 
+  public Tuple ceil() {
+    return new Tuple (Math.ceil(x), Math.ceil(y), Math.ceil(w));
+  }
+
   public Tuple round() {
     return new Tuple (Math.round(x), Math.round(y), Math.round(w));
   }
