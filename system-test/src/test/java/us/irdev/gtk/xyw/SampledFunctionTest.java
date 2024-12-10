@@ -43,7 +43,7 @@ public class SampledFunctionTest {
     // add a svg file to show the result
     Frame frame = new Frame (function.domain)
             .begin (new Traits (0.1, "#bbb", "none"))
-            .element(new Grid (18, 18))
+            .element(new Grid (VEC(10, 10)))
             .begin (new Traits (0.25, "#444", "none"))
             .element(new Axis ())
             .begin (new Traits (0.25, "#070", "none"))
