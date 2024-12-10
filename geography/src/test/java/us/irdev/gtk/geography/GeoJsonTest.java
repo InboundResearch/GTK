@@ -115,7 +115,7 @@ public class GeoJsonTest {
   @Test
   public void testTexas() {
     var geoJsonList = GeoJson.read (Paths.get("data", "texas.json").toString());
-    drawSvg ("texas", geoJsonList, new Domain(-110, -90, 25, 40));
+    drawSvg ("texas", geoJsonList, new Domain(-110, -91, 25, 40));
     assertEquals(1, geoJsonList.size());
     var geoJson = geoJsonList.get(0);
     assertEquals ("Texas", geoJson.properties.getString("name"));
