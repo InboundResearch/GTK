@@ -40,7 +40,9 @@ public class GeoJsonTest {
 
   private void drawSvg(String name, List<GeoJson> geoJsonList, Domain domain) {
     if (domain == null) {
-      domain = ListFunc.reduce(geoJsonList, new Domain(), (geoJson, dom) -> Domain.union (geoJson.domain, dom)).pad(VEC(1, 1));
+      domain = ListFunc.reduce(geoJsonList, new Domain(), (geoJson, dom) -> Domain.union (geoJson.domain, dom));
+      var pad = domain.span () * 0.05;
+      domain = domain.pad(VEC(pad, pad));
       //domain = new Domain(-180, 0, 0, 90);
     }
 

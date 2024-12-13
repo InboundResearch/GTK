@@ -8,6 +8,9 @@ import us.irdev.bedrock.bag.BagObject;
 import us.irdev.bedrock.bag.BagObjectFrom;
 import us.irdev.gtk.functional.ListFunc;
 import us.irdev.gtk.xyw.*;
+
+import static us.irdev.gtk.xyw.Polygon.Classification;
+import static us.irdev.gtk.xyw.Polygon.Classification.*;
 import static us.irdev.gtk.xyw.Tuple.PT;
 
 import java.io.File;
@@ -41,8 +44,8 @@ public class GeoJson {
             }
         }
 
-        // XXX and the last tuple could still be identical to the first tuple in particularly ugly
-        // XXX cases, so we walk back the end of the array
+        // the last tuple could still be identical to the first tuple in particularly uglycases, so
+        // we walk back the end of the array to remove such degeneracies
         if (!tuples.isEmpty()) {
             var firstElement = tuples.get(0);
 
@@ -56,6 +59,7 @@ public class GeoJson {
             }
         }
 
+        // join the tuples list into a list of segments, then return a new segments object with that
         return new Segments(new PolyLine (tuples, closed).toSegments());
     }
 
@@ -106,7 +110,7 @@ public class GeoJson {
 
         // compute the domain, holes must be fully contained within the boundary, so we can skip them here
         log.info("Ring count: {}", ringArrays.size());
-        domain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.boundary.domain, dom));
+        domain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
     }
 
     public static List<GeoJson> read(String filename) {
@@ -135,7 +139,6 @@ public class GeoJson {
         if (domain.contains (pt)) {
             // create a segments object with a single line segment from the pt to the right side of
             // the input domains
-            var right = domain.right() + 1;
             var segment = new Segment(pt, PT(domain.right() + 1, pt.y));
             var segments = new Segments(List.of(segment));
 
@@ -147,5 +150,19 @@ public class GeoJson {
             }
         }
         return false;
+    }
+
+    public Classification classify (Domain domain) {
+        for (var ringArray : ringArrays) {
+            switch (ringArray.classify (domain)) {
+                case CONTAINS_DOMAIN:
+                    return CONTAINS_DOMAIN;
+                case NO_INTERSECTION:
+                    break;
+                case NON_TRIVIAL_INTERSECTION:
+                    return NON_TRIVIAL_INTERSECTION;
+            }
+        }
+        return NO_INTERSECTION;
     }
 }

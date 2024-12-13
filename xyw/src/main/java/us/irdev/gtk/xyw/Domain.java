@@ -63,6 +63,20 @@ public class Domain {
   }
 
   /**
+   * @return the width of the domain
+   */
+  public double width () {
+    return max.x - min.x;
+  }
+
+  /**
+   * @return the vector size of the domain
+   */
+  public double height () {
+    return max.y - min.y;
+  }
+
+  /**
    * @return the scalar size of the domain
    */
   public double span () {

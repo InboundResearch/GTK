@@ -64,6 +64,10 @@ public class Frame {
     return poly (segments.segments);
   }
 
+  public Frame poly (Polygon polygon) {
+    return poly (polygon.segments);
+  }
+
   public Frame points (double size, Tuple... points) {
     return element (new Points (size, points));
   }
