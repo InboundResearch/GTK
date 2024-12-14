@@ -39,19 +39,19 @@ public class Grid implements Element {
   @Override
   public String emit (Domain domain, Traits traits) {
     // condition the spacing, if the result should be dynamically computed
-    Tuple spacing = (this.spacing != null) ? this.spacing : domain.size().scale (1.0 / defaultStepCount);
+    var spacing = (this.spacing != null) ? this.spacing : domain.size().scale (1.0 / defaultStepCount);
 
     // emit gridlines using the current traits
-    StringBuilder builder = new StringBuilder();
+    var builder = new StringBuilder();
 
     // compute the size of the domain, the bottom left of the grid, and the number of steps
-    Tuple size = domain.size();
-    Tuple bottomLeft = domain.min.hquotient (spacing).ceil().hproduct (spacing);
-    Tuple stepCount = size.hquotient (spacing).ceil();
+    var size = domain.size();
+    var bottomLeft = origin.add (domain.min.subtract (origin).hquotient (spacing).ceil().hproduct (spacing));
+    var stepCount = domain.max.subtract (bottomLeft).hquotient (spacing).floor();
 
     // emit the vertical axis lines, starting with the first grid line >= left of the domain
     for (int i = 0; i <= (int) stepCount.x; ++i) {
-      double x = bottomLeft.x + (i * spacing.x);
+      var x = bottomLeft.x + (i * spacing.x);
       builder.append (new Line (PT (x, domain.min.y), PT(x, domain.max.y)).emit (domain, traits));
     }
 
@@ -61,6 +61,7 @@ public class Grid implements Element {
       builder.append (new Line (PT (domain.min.x, y), PT(domain.max.x, y)).emit (domain, traits));
     }
 
+    // complete the output
     return builder.toString();
   }
 

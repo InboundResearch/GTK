@@ -70,10 +70,17 @@ public class Domain {
   }
 
   /**
-   * @return the vector size of the domain
+   * @return the height of the domain
    */
   public double height () {
     return max.y - min.y;
+  }
+
+  /**
+   * @return the aspect ratio (width / height) of the domain
+   */
+  public double aspectRatio () {
+    return width () / height ();
   }
 
   /**

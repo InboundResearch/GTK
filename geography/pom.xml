@@ -25,7 +25,6 @@
       <groupId>us.irdev.gtk</groupId>
       <artifactId>svg</artifactId>
       <version>${gtk.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>us.irdev.gtk</groupId>

@@ -9,34 +9,16 @@ import us.irdev.gtk.svg.Grid;
 import us.irdev.gtk.svg.Traits;
 import us.irdev.gtk.xyw.Assertions;
 import us.irdev.gtk.xyw.Domain;
-import us.irdev.gtk.xyw.SegmentsPair;
-import us.irdev.gtk.xyw.Tuple;
 
 import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static us.irdev.gtk.xyw.Assertions.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class GeoJsonTest {
   private static final double SVG_GRID_DEGREES = 3.0;
-
-  private static double absfloor (double value) {
-    // normal floor goes the wrong way on negative numbers
-    return Math.floor(Math.abs(value)) * Math.signum(value);
-  }
-
-  private static double computeOffset(double x, double step) {
-    return x - (Math.floor(x / step) * step);
-  }
-
-  private static int computeSteps(double min, double max, double step) {
-    double offsetMin = computeOffset (min, step);
-    double offsetMax = computeOffset (max, step);
-    return 1 + (int) Math.round(((max - offsetMax) - (min - offsetMin)) / step);
-  }
 
   private void drawSvg(String name, List<GeoJson> geoJsonList, Domain domain) {
     if (domain == null) {
@@ -48,7 +30,7 @@ public class GeoJsonTest {
 
     var frame = new Frame(domain)
             .begin (new Traits(0.05, "#888", "none"))
-            .element(new Grid(VEC(3.0, 3.0)))
+            .element(new Grid(VEC(SVG_GRID_DEGREES, SVG_GRID_DEGREES)))
             .begin (new Traits(0.1, "#444", "none"))
             .element(new Axis());
 
@@ -150,7 +132,7 @@ public class GeoJsonTest {
 
   @Test
   public void testStates() {
-    var geoJsonList = GeoJson.read (Paths.get("data", "gz_2010_us_states.json").toString());
+    var geoJsonList = GeoJson.read (Paths.get("data", "usa_states.json").toString());
     drawSvg ("states", geoJsonList, new Domain(-180, -60, 15, 75));
   }
 

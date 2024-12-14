@@ -85,7 +85,7 @@ public class GeoJson {
     public GeoJson (BagObject bagObject) {
         assert (bagObject.getString("type").equals("Feature"));
         properties = bagObject.getBagObject("properties");
-        var geometry = bagObject.getBagObject("geometry");
+        var geometry = bagObject.getBagObject("geometry", () -> BagObject.open ("type", "None"));
         switch (geometry.getString("type")) {
             case "MultiPolygon":
                 ringArrays = ringArraysFrom(geometry.getBagArray("coordinates"), true);
@@ -103,14 +103,18 @@ public class GeoJson {
                 log.warn ("Reading LineString");
                 ringArrays = List.of(ringArrayFrom(geometry.getBagArray("coordinates"), false));
                 break;
+
+            // the remainders, including our special "None" case
+            case "None":
             default:
                 ringArrays = new ArrayList<RingArray> ();
                 break;
         }
 
         // compute the domain, holes must be fully contained within the boundary, so we can skip them here
-        log.info("Ring count: {}", ringArrays.size());
-        domain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
+        log.info("Ring count for {}: {}", properties.getString ("name", () -> "Unknown"), ringArrays.size());
+        var computedDomain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
+        domain = computedDomain.valid() ? computedDomain : new Domain (-180., 180., -90., 90.);
     }
 
     public static List<GeoJson> read(String filename) {

@@ -17,7 +17,7 @@ public class Line implements Element {
 
   @Override
   public String emit(Domain domain, Traits traits) {
-    return String.format ("<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" fill=\"none\" stroke=\"%s\" stroke-width=\"%f%%\"/>\n", a.x, a.y, b.x, b.y, traits.strokeColor, traits.strokeWeight);
+    return String.format ("<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" fill=\"none\" stroke=\"%s\" stroke-width=\"%f%%\" opacity=\"%f\"/>\n", a.x, a.y, b.x, b.y, traits.strokeColor, traits.strokeWeight, traits.opacity);
   }
 
   @Override

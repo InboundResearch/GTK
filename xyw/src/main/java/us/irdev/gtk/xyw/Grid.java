@@ -7,8 +7,8 @@ import java.util.*;
 import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class Grid<T> {
-    private final Domain domain;
-    private final Tuple spacing;
+    public final Domain domain;
+    public final Tuple spacing;
     private final int width;
     private final int height;
     private final Map<Integer, Set<T>> cells;
@@ -22,8 +22,15 @@ public class Grid<T> {
         cells = new HashMap<> ();
     }
 
+    private static Tuple computeSpacing (Domain domain, int n) {
+        // domain.size().scale (1.0 / Math.ceil (Math.sqrt (n)))
+        var aspectRatio = domain.aspectRatio();
+        var dim = 1.0 / Math.ceil (Math.sqrt (n));
+        return domain.size().hproduct (VEC(dim / aspectRatio, dim));
+    }
+
     public Grid (Domain domain, int n) {
-        this (domain, domain.size().scale (1.0 / Math.ceil (Math.sqrt (n))));
+        this (domain, computeSpacing (domain, n));
     }
 
     protected int hash (Tuple pt) {
@@ -49,5 +56,9 @@ public class Grid<T> {
             }
         }
         return results;
+    }
+
+    public double occupancy () {
+        return cells.size() / (double) (width * height);
     }
 }

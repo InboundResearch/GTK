@@ -16,7 +16,7 @@ public class Poly implements Element {
   public String emit (Domain domain, Traits traits) {
     // <polygon points="200,10 250,190 160,210" style="fill:lime;stroke:purple;stroke-width:1" />
     StringBuilder builder = new StringBuilder();
-    builder.append(String.format("<poly%s fill=\"%s\" stroke=\"%s\" stroke-width=\"%f%%\" stroke-linejoin=\"round\" stroke-linecap=\"round\" points=\"", polyine.isClosed() ? "gon" : "line", polyine.isClosed() ? traits.fillColor : "none", traits.strokeColor, traits.strokeWeight));
+    builder.append(String.format("<poly%s fill=\"%s\" stroke=\"%s\" stroke-width=\"%f%%\" opacity=\"%f\" stroke-linejoin=\"round\" stroke-linecap=\"round\" points=\"", polyine.isClosed() ? "gon" : "line", polyine.isClosed() ? traits.fillColor : "none", traits.strokeColor, traits.strokeWeight, traits.opacity));
     String spacer = "";
     for (Tuple point: polyine.getPoints()) {
       builder.append(String.format ("%s%f,%f", spacer, point.x, point.y));

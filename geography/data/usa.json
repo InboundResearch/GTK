@@ -146462,7 +146462,7 @@
   "type": "Feature",
   "id": "US",
   "properties": {
-    "GEOID": "US",
-    "name": "USA"
+    "name": "USA",
+    "source": "U.S. Census Bureau"
   }
 }
