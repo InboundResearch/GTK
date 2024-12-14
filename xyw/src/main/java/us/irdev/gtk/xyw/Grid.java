@@ -16,7 +16,8 @@ public class Grid<T> {
     public Grid (Domain domain, Tuple spacing) {
         this.domain = domain;
         this.spacing = spacing;
-        var size = domain.size().hquotient (spacing).ceil ();
+        // XXX this needs to not go over...
+        var size = domain.size().hquotient (spacing).floor ();
         width = (int) size.x;
         height = (int) size.y;
         cells = new HashMap<> ();

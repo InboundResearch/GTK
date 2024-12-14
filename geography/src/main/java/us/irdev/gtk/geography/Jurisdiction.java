@@ -11,10 +11,7 @@ import us.irdev.gtk.xyw.Tuple;
 import us.irdev.gtk.svg.*;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static us.irdev.gtk.xyw.Polygon.Classification.*;
 import static us.irdev.gtk.xyw.Tuple.VEC;
@@ -101,6 +98,19 @@ public class Jurisdiction {
         };
     }
 
+    private static void drawJurisdiction (Jurisdiction jurisdiction, Frame frame) {
+        for (var ringArray : jurisdiction.geo.ringArrays) {
+            frame
+                    .begin (new Traits (0.05, "#00a", "none"))
+                    .poly (ringArray.boundary);
+            for (var hole : ringArray.holes) {
+                frame
+                        .begin(new Traits(0.03, "red", "none"))
+                        .poly(hole);
+            }
+        }
+    }
+
     public void toSvg (String name) {
         var frame = new Frame(grid.domain)
                 .begin (new Traits(0.05, "#bbb", "none"))
@@ -119,20 +129,22 @@ public class Jurisdiction {
             }
         }
 
-        /*
-        for (var geoJson : geoJsonList) {
-            for (var ringArray : geoJson.ringArrays) {
-                frame
-                        .begin (new Traits (0.05, "#00a", "none"))
-                        .poly (ringArray.boundary);
-                for (var hole : ringArray.holes) {
-                    frame
-                            .begin(new Traits(0.03, "red", "none"))
-                            .poly(hole);
+        // add in the polygons
+        var renderedSet = new HashSet<String> ();
+        for (var domain : grid.enumerate()) {
+            var subordinates = grid.getAt (domain.center());
+            for (var subordinate : subordinates) {
+                var geo = subordinate.jurisdiction.geo;
+                var geoName = geo.properties.getString("name");
+                if (!renderedSet.contains(geoName)) {
+                    renderedSet.add(geoName);
+                    drawJurisdiction (subordinate.jurisdiction, frame);
                 }
             }
         }
-        */
+
+        // and my boundary
+        drawJurisdiction (this, frame);
 
         String svg = frame.emitSvg(name, 800);
         Utility.writeFile(Paths.get("output", name + ".svg").toString(), svg);
