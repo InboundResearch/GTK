@@ -1,11 +1,8 @@
 package us.irdev.gtk.geography;
 
 import us.irdev.bedrock.bag.BagObject;
-import us.irdev.gtk.functional.ListFunc;
 import us.irdev.gtk.io.Utility;
-import us.irdev.gtk.xyw.Domain;
 import us.irdev.gtk.xyw.Grid;
-import us.irdev.gtk.xyw.Polygon;
 import us.irdev.gtk.xyw.Polygon.Classification;
 import us.irdev.gtk.xyw.Tuple;
 import us.irdev.gtk.svg.*;
@@ -14,18 +11,14 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static us.irdev.gtk.xyw.Polygon.Classification.*;
-import static us.irdev.gtk.xyw.Tuple.VEC;
 
+// XXX jurisdiction is the wrong type of entity for a hierarchical container, as a single geojson
+// XXX multi-polygon may contain many polygons. The right way to do this is to put the polygons into
+// XXX the hierarchy at the appropriate level, and include a tag with them to the jurisdiction they
+// XXX are from. this way the spatial partitioning can be fully leveraged.
 public class Jurisdiction {
-    private static class JurisdictionContainer {
-        public final Jurisdiction jurisdiction;
-        public final boolean trivialAccept;
-        public JurisdictionContainer (Jurisdiction jurisdiction, boolean trivialAccept) {
-            this.jurisdiction = jurisdiction;
-            this.trivialAccept = trivialAccept;
-        }
-    }
-    public final GeoJson geo;
+    private record JurisdictionContainer(Jurisdiction jurisdiction, boolean trivialAccept) {}
+    public final Feature geo;
     private final Grid<JurisdictionContainer> grid;
 
     // the grid sizing is based on the sqrt (n) where n is the number of children. this is fine if
@@ -35,10 +28,12 @@ public class Jurisdiction {
     // estimate, not computed in any way.
     private final static int MULTIPLIER = 100;
 
-    public Jurisdiction(GeoJson geo, List<Jurisdiction> subordinates) {
+    public Jurisdiction(Feature geo, List<Jurisdiction> subordinates) {
         assert (geo != null);
         this.geo = geo;
         if (subordinates != null) {
+            // XXX compute the domain of all the subordinates
+
             grid = new Grid<>(geo.domain, subordinates.size() * MULTIPLIER);
 
             // fill the grid with the characterized children, this is not efficient
@@ -61,7 +56,7 @@ public class Jurisdiction {
         }
     }
 
-    public Jurisdiction(GeoJson geo) {
+    public Jurisdiction(Feature geo) {
         this (geo, null);
     }
 
@@ -143,7 +138,7 @@ public class Jurisdiction {
             }
         }
 
-        // and my boundary
+        // and my boundary (if I have one)
         drawJurisdiction (this, frame);
 
         String svg = frame.emitSvg(name, 800);

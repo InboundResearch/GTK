@@ -13,13 +13,14 @@ import static us.irdev.gtk.xyw.Tuple.PT;
 
 public class JurisdictionTest {
 
+
     @Test
     public void testJurisdiction() {
         // complete test, with world, usa, states
-        var worldGeoJsonList = GeoJson.read (Paths.get("data", "world.json").toString());
-        var usaGeoJsonList = GeoJson.read (Paths.get("data", "usa.json").toString());
-        var usaStatesGeoJsonList = GeoJson.read (Paths.get("data", "usa_states.json").toString());
-        var usaCountiesGeoJsonList = GeoJson.read (Paths.get("data", "usa_counties.json").toString());
+        var worldGeoJsonList = Feature.readGeoJsonFile(Paths.get("data", "world.json").toString());
+        var usaGeoJsonList = Feature.readGeoJsonFile(Paths.get("data", "USA-ADM0.geojson.gz").toString());
+        var usaStatesGeoJsonList = Feature.readGeoJsonFile(Paths.get("data", "USA-ADM1.geojson.gz").toString());
+        var usaCountiesGeoJsonList = Feature.readGeoJsonFile(Paths.get("data", "USA-ADM2.geojson.gz").toString());
 
         // condition the counties into sub lists by state
         var statesMap = new HashMap<Integer, List<Jurisdiction>>();

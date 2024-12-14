@@ -1,5 +1,8 @@
 package us.irdev.gtk.geography;
 
+import us.irdev.bedrock.bag.BagObject;
+import us.irdev.gtk.svg.Frame;
+import us.irdev.gtk.svg.Traits;
 import us.irdev.gtk.xyw.*;
 import us.irdev.gtk.functional.ListFunc;
 import static us.irdev.gtk.xyw.Polygon.Classification;
@@ -7,17 +10,20 @@ import static us.irdev.gtk.xyw.Polygon.Classification.*;
 
 import java.util.List;
 
+// the name ring array is taken from the GeoJSON spec discussing polygons
 public class RingArray {
     public final Polygon boundary;
     public final List<Polygon> holes;
+    public final BagObject properties;
 
-    public RingArray(Segments boundary, List<Segments> holes) {
+    public RingArray(Segments boundary, List<Segments> holes, BagObject properties) {
         this.boundary = new Polygon (boundary);
         this.holes = ListFunc.map (holes, Polygon::new);
+        this.properties = properties;
     }
 
-    public RingArray(List<Segments> segmentsList) {
-        this (segmentsList.get(0), segmentsList.subList (1, segmentsList.size()));
+    public RingArray(List<Segments> segmentsList, BagObject properties) {
+        this (segmentsList.get(0), segmentsList.subList (1, segmentsList.size()), properties);
     }
 
     public boolean contains(Segments segments) {
@@ -54,5 +60,16 @@ public class RingArray {
 
     public Domain domain () {
         return boundary.domain();
+    }
+
+    public void toSvg (Frame frame) {
+        frame
+                .begin(new Traits(0.01, "#008", "none"))
+                .poly(boundary);
+        for (var hole : holes) {
+            frame
+                    .begin(new Traits(0.005, "#080", "none"))
+                    .poly(hole);
+        }
     }
 }
