@@ -114,6 +114,8 @@ public class Tuple {
 
   @Override
   public String toString () {
+    // note the implications of this format string - tuples will implicitly be grouped around a box
+    // at the 6th-digit of precision
     return String.format("(%01.06f, %01.06f, %01.06f)", x, y, w);
   }
 

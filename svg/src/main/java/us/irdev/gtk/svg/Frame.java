@@ -73,7 +73,11 @@ public class Frame {
   }
 
   public Frame box (Domain domain) {
-    return element (new Box(domain));
+    return box (domain, null);
+  }
+
+  public Frame box (Domain domain, String title) {
+    return element (new Box(domain, title));
   }
 
   public Frame begin(Traits traits) {

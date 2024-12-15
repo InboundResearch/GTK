@@ -14,11 +14,13 @@ public class Polygon {
 
     public boolean contains (Segments test) {
         SegmentsPair sp = SegmentsPair.reduce(segments, test);
-        return (sp != null) && ((sp.intersections().size() % 2) == 1);
+        return (sp != null) && ((sp.uniqueIntersections().size() % 2) == 1);
     }
 
     public Segments getSegmentsForContains(Tuple pt) {
-        return new Segments(List.of(new Segment(pt, PT(segments.domain.right() + 1, pt.y))));
+        var domain = segments.domain;
+        var right = domain.right() + (domain.width() * 0.01);
+        return new Segments(List.of(new Segment(pt, PT(right, pt.y))));
     }
 
     public boolean contains(Tuple pt) {

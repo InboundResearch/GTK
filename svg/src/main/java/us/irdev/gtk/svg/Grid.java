@@ -47,7 +47,7 @@ public class Grid implements Element {
     // compute the size of the domain, the bottom left of the grid, and the number of steps
     var size = domain.size();
     var bottomLeft = origin.add (domain.min.subtract (origin).hquotient (spacing).ceil().hproduct (spacing));
-    var stepCount = domain.max.subtract (bottomLeft).hquotient (spacing).floor();
+    var stepCount = domain.max.subtract (bottomLeft).hquotient (spacing).ceil();
 
     // emit the vertical axis lines, starting with the first grid line >= left of the domain
     for (int i = 0; i <= (int) stepCount.x; ++i) {

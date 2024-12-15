@@ -1,5 +1,7 @@
 package us.irdev.gtk.geography;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import us.irdev.bedrock.bag.BagObject;
 import us.irdev.gtk.functional.ListFunc;
 import us.irdev.gtk.io.Utility;
@@ -13,25 +15,31 @@ import java.util.*;
 
 import static us.irdev.gtk.xyw.Polygon.Classification;
 import static us.irdev.gtk.xyw.Polygon.Classification.*;
+import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class Classifier {
+    private static final Logger log = LogManager.getLogger(Classifier.class);
+
     private record Container(boolean trivialAccept, RingArray ringArray) {}
-    private final Grid<Container> grid;
+    public final Grid<Container> grid;
 
     // the grid sizing is based on the sqrt (n) where n is the number of children. this is fine if
     // the children are uniformly distributed, but at some levels of the jurisdictional hierarchy
     // they are not. in order to give more granularity, we buffer the n with this multiplier, at the
     // possible expense of creating a few more redundant cells. this value is an arm's length
     // estimate, not computed in any way.
-    private final static int MULTIPLIER = 50;
+    private final static int MULTIPLIER = 16;
 
     public Classifier (List<RingArray> ringArrays) {
         var computedDomain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
         var gridDomain = computedDomain.valid() ? computedDomain : new Domain (-180., 180., -90., 90.);
-        grid = new Grid<> (gridDomain, ringArrays.size() * MULTIPLIER);
+        //grid = new Grid<> (gridDomain, ringArrays.size() * MULTIPLIER);
+        grid = new Grid<> (new Domain (-180., 180., -90., 90.), VEC(0.5, 0.5));
 
         // populate the grid, this is not particularly efficient
-        for (var domain : grid.enumerate()) {
+        var domains = grid.enumerate();
+        log.info ("Populating {} Ring Arrays in {} domains", ringArrays.size(), domains.size());
+        for (var domain : domains) {
             for (var ringArray : ringArrays) {
                 switch (ringArray.classify (domain)) {
                     case NO_INTERSECTION:
@@ -82,7 +90,7 @@ public class Classifier {
             if (classification != NO_INTERSECTION) {
                 frame
                         .begin (new Traits(0.05, "none", colors.get (classification), 0.75))
-                        .box (domain);
+                        .box (domain, "domain [min:" + domain.min.toString () + ", max:" + domain.max.toString () + "]");
             }
         }
 

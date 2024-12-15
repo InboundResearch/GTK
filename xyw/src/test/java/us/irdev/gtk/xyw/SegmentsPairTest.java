@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static us.irdev.gtk.xyw.Helper.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,5 +42,28 @@ public class SegmentsPairTest {
     SegmentsPair raw = rawPathological();
     assertNotNull (raw);
     List<Tuple> result = raw.reduce().intersections ();
+  }
+
+  @Test
+  public void testIntersectionCoincidence() {
+    // a really strange acse is when I have multiple line segments that share an endpoint, and
+    // another line we are testing for intersection would go right through that endpoint. we'll get
+    // multiple intersections.
+    var a = new Segments(List.of(
+            new Segment (PT(0, 0), PT (1, 1)),
+            new Segment (PT (1, 1), PT (2, 2))
+    ));
+    var b = new Segments(List.of(
+            new Segment (PT (0, 1), PT (2, 1))
+    ));
+    var pair = new SegmentsPair (a, b);
+    var result = pair.reduce().intersections ();
+    assertEquals(2, result.size ());
+    assertEquals(PT(1, 1), result.get(0));
+    assertEquals(PT(1, 1), result.get(1));
+
+    result = pair.reduce().uniqueIntersections ();
+    assertEquals(1, result.size ());
+    assertEquals(PT(1, 1), result.get(0));
   }
 }

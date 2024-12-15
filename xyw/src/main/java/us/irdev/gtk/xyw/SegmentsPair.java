@@ -1,6 +1,7 @@
 package us.irdev.gtk.xyw;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -74,16 +75,23 @@ public class SegmentsPair {
   }
 
   public List<Tuple> intersections () {
-    List<Tuple> result = new ArrayList<>();
-    for (Segment sa: a.segments) {
-      for (Segment sb: b.segments) {
-        Tuple intersection = Segment.intersect (sa, sb);
+    var result = new ArrayList<Tuple>();
+    for (var sa: a.segments) {
+      for (var sb: b.segments) {
+        var intersection = Segment.intersect (sa, sb);
         if (intersection != null) {
           result.add (intersection);
         }
       }
     }
     return result.isEmpty() ? null : result;
+  }
+
+  public List<Tuple> uniqueIntersections () {
+    // in some rare-ish cases, duplicate points can end up in the intersections list. the result is
+    // correct, but may not be what was intended. We use a hash set, which implicity groups tuples
+    // around the sixth digit of precision.
+    return new ArrayList<>(new HashSet<>(intersections ()));
   }
 
   public static List<Tuple> intersections(List<SegmentsPair> pairs) {

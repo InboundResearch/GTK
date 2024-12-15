@@ -16,18 +16,18 @@ public class Grid<T> {
     public Grid (Domain domain, Tuple spacing) {
         this.domain = domain;
         this.spacing = spacing;
-        // XXX this needs to not go over...
-        var size = domain.size().hquotient (spacing).floor ();
+        var size = domain.size().hquotient (spacing).ceil ();
         width = (int) size.x;
         height = (int) size.y;
         cells = new HashMap<> ();
     }
 
     private static Tuple computeSpacing (Domain domain, int n) {
-        // domain.size().scale (1.0 / Math.ceil (Math.sqrt (n)))
         var aspectRatio = domain.aspectRatio();
-        var dim = 1.0 / Math.ceil (Math.sqrt (n));
-        return domain.size().hproduct (VEC(dim / aspectRatio, dim));
+        var sqrtn = Math.sqrt(n);
+        var dimX = 1.0 / Math.ceil (sqrtn * domain.aspectRatio());
+        var dimY = 1.0 / Math.ceil (sqrtn);
+        return domain.size().hproduct (VEC(dimX, dimY));
     }
 
     public Grid (Domain domain, int n) {

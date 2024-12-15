@@ -6,11 +6,9 @@ import org.apache.logging.log4j.Logger;
 import us.irdev.bedrock.bag.BagArray;
 import us.irdev.bedrock.bag.BagObject;
 import us.irdev.bedrock.bag.BagObjectFrom;
-import us.irdev.gtk.functional.ListFunc;
+import us.irdev.gtk.svg.Frame;
 import us.irdev.gtk.xyw.*;
 
-import static us.irdev.gtk.xyw.Polygon.Classification;
-import static us.irdev.gtk.xyw.Polygon.Classification.*;
 import static us.irdev.gtk.xyw.Tuple.PT;
 
 import java.io.*;
@@ -24,22 +22,21 @@ public class Feature {
 
     public final BagObject properties;
     public final List<RingArray> ringArrays;
-    public final Domain domain;
 
     // a coordinate is an array of floats (maybe 2 or 3)
     private static Tuple coordinateFrom(BagArray tupleArray) {
-        return PT (tupleArray.getFloat(0), tupleArray.getFloat(1));
+        return PT(tupleArray.getFloat(0), tupleArray.getFloat(1));
     }
 
     // a ring is an array of coordinates, it may be closed (polygon) or open (polyline)
-    private static Segments ringFrom (BagArray ring) {
+    private static Segments ringFrom(BagArray ring) {
         var tuples = new ArrayList<Tuple>();
         // geojson transmits the last point the same as the first, so we don't need to grab the last
         // one, but it doesn't seem to protect against duplicate tuples...
         var lastTuple = PT(1.0e9, 1.0e9);
         for (int i = 0, count = ring.getCount() - 1; i < count; ++i) {
             var tuple = coordinateFrom(ring.getBagArray(i));
-            if (! Tuple.similar (tuple, lastTuple)) {
+            if (!Tuple.similar(tuple, lastTuple)) {
                 lastTuple = tuple;
                 tuples.add(tuple);
             }
@@ -52,8 +49,8 @@ public class Feature {
 
             // iterate from the end of the list
             for (int i = tuples.size() - 1; i > 0; i--) {
-                if (Tuple.similar (tuples.get(i), firstElement)) {
-                    tuples.remove (i);
+                if (Tuple.similar(tuples.get(i), firstElement)) {
+                    tuples.remove(i);
                 } else {
                     break;
                 }
@@ -61,24 +58,24 @@ public class Feature {
         }
 
         // join the tuples list into a list of segments, then return a new segments object with that
-        return new Segments(new PolyLine (tuples, true).toSegments());
+        return new Segments(new PolyLine(tuples, true).toSegments());
     }
 
     // a ring array is an array of rings, they may be closed (polygons) - in which case the first
     // ring is taken to be the boundary and subsequent rings are holes (and could probably be cut
     // into the parent polygon somehow), or open (polylines)
-    private static RingArray ringArrayFrom (BagArray ringArray, BagObject properties) {
+    private static RingArray ringArrayFrom(BagArray ringArray, BagObject properties) {
         var result = new ArrayList<Segments>();
         for (int i = 0, count = ringArray.getCount(); i < count; ++i) {
-            result.add(ringFrom (ringArray.getBagArray(i)));
+            result.add(ringFrom(ringArray.getBagArray(i)));
         }
-        return new RingArray (result, properties);
+        return new RingArray(result, properties);
     }
 
-    private static List<RingArray> ringArraysFrom (BagArray ringArrays, BagObject properties) {
+    private static List<RingArray> ringArraysFrom(BagArray ringArrays, BagObject properties) {
         var result = new ArrayList<RingArray>();
         for (int i = 0, count = ringArrays.getCount(); i < count; ++i) {
-            result.add(ringArrayFrom (ringArrays.getBagArray(i), properties));
+            result.add(ringArrayFrom(ringArrays.getBagArray(i), properties));
         }
         return result;
     }
@@ -86,7 +83,7 @@ public class Feature {
     public Feature(BagObject bagObject) {
         assert (bagObject.getString("type").equals("Feature"));
         properties = bagObject.getBagObject("properties");
-        var geometry = bagObject.getBagObject("geometry", () -> BagObject.open ("type", "None"));
+        var geometry = bagObject.getBagObject("geometry", () -> BagObject.open("type", "None"));
         switch (geometry.getString("type")) {
             case "MultiPolygon":
                 ringArrays = ringArraysFrom(geometry.getBagArray("coordinates"), properties);
@@ -98,29 +95,27 @@ public class Feature {
             // the remainders, including our special "None" case
             case "None":
             default:
-                log.warn ("Unsupported geometry type {}", geometry.getString("type"));
-                ringArrays = new ArrayList<RingArray> ();
+                log.warn("No geometry read, found type: {}", geometry.getString("type"));
+                ringArrays = new ArrayList<RingArray>();
                 break;
         }
-
-        // compute the domain, holes must be fully contained within the boundary, so we can skip them here
-        log.info("Ring count for {}: {}", properties.getString ("name", () -> "Unknown"), ringArrays.size());
-        var computedDomain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
-        domain = computedDomain.valid() ? computedDomain : new Domain (-180., 180., -90., 90.);
     }
 
-    public static List<Feature> readGeoJsonFile(String filename) {
+    public static List<Feature> fromGeoJson(String source) {
         // read the input file, some may be gzipped
         BagObject root;
-        if (filename.endsWith(".gz")) {
-            try (GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(filename))) {
-                root = BagObjectFrom.inputStream (gzipInputStream);
+        if (source.startsWith("https://")) {
+            root = BagObjectFrom.url(source);
+        } else if (source.endsWith(".gz")) {
+            try (GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(source))) {
+                root = BagObjectFrom.inputStream(gzipInputStream);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
-            root = BagObjectFrom.file (new File(filename));
+            root = BagObjectFrom.file(new File(source));
         }
+        log.info ("Loaded {}", source);
 
         // handle the file contents
         switch (root.getString("type")) {
@@ -143,34 +138,9 @@ public class Feature {
         }
     }
 
-    public boolean contains (Tuple pt) {
-        if (domain.contains (pt)) {
-            // create a segments object with a single line segment from the pt to the right side of
-            // the input domains
-            var segment = new Segment(pt, PT(domain.right() + 1, pt.y));
-            var segments = new Segments(List.of(segment));
-
-            // reduce and compute the intersections
-            for (var ringArray : ringArrays) {
-                if (ringArray.contains(segments)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public Classification classify (Domain domain) {
+    public void toSvg(Frame frame) {
         for (var ringArray : ringArrays) {
-            switch (ringArray.classify (domain)) {
-                case CONTAINS_DOMAIN:
-                    return CONTAINS_DOMAIN;
-                case NO_INTERSECTION:
-                    break;
-                case NON_TRIVIAL_INTERSECTION:
-                    return NON_TRIVIAL_INTERSECTION;
-            }
+            ringArray.toSvg(frame);
         }
-        return NO_INTERSECTION;
     }
 }
