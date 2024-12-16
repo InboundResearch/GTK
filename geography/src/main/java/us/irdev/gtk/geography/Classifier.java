@@ -20,7 +20,7 @@ import static us.irdev.gtk.xyw.Tuple.VEC;
 public class Classifier {
     private static final Logger log = LogManager.getLogger(Classifier.class);
 
-    private record Container(boolean trivialAccept, RingArray ringArray) {}
+    public record Container(boolean trivialAccept, RingArray ringArray) {}
     public final Grid<Container> grid;
 
     // the grid sizing is based on the sqrt (n) where n is the number of children. this is fine if
