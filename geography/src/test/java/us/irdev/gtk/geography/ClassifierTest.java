@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import us.irdev.bedrock.bag.BagObject;
-import us.irdev.gtk.functional.ListFunc;
 import us.irdev.gtk.io.Utility;
 import us.irdev.gtk.xyw.*;
 
