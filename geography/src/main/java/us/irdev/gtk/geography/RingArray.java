@@ -16,14 +16,14 @@ public class RingArray {
     public final List<Polygon> holes;
     public final BagObject properties;
 
-    public RingArray(Segments boundary, List<Segments> holes, BagObject properties) {
-        this.boundary = new Polygon (boundary);
-        this.holes = ListFunc.map (holes, Polygon::new);
+    public RingArray(Polygon boundary, List<Polygon> holes, BagObject properties) {
+        this.boundary = boundary;
+        this.holes = holes;
         this.properties = properties;
     }
 
-    public RingArray(List<Segments> segmentsList, BagObject properties) {
-        this (segmentsList.get(0), segmentsList.subList (1, segmentsList.size()), properties);
+    public RingArray(List<Polygon> polygonList, BagObject properties) {
+        this (polygonList.get(0), polygonList.subList (1, polygonList.size()), properties);
     }
 
     public boolean contains(Tuple pt) {

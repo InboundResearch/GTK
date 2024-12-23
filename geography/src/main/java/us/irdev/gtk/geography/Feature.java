@@ -29,7 +29,7 @@ public class Feature {
     }
 
     // a ring is an array of coordinates, it may be closed (polygon) or open (polyline)
-    private static Segments ringFrom(BagArray ring) {
+    private static Polygon ringFrom(BagArray ring) {
         var tuples = new ArrayList<Tuple>();
         // geojson transmits the last point the same as the first, so we don't need to grab the last
         // one, but it doesn't seem to protect against duplicate tuples...
@@ -42,7 +42,7 @@ public class Feature {
             }
         }
 
-        // the last tuple could still be identical to the first tuple in particularly uglycases, so
+        // the last tuple could still be identical to the first tuple in particularly ugly cases, so
         // we walk back the end of the array to remove such degeneracies
         if (!tuples.isEmpty()) {
             var firstElement = tuples.get(0);
@@ -58,14 +58,14 @@ public class Feature {
         }
 
         // join the tuples list into a list of segments, then return a new segments object with that
-        return new Segments(new PolyLine(tuples, true).toSegments());
+        return new Polygon(tuples);
     }
 
     // a ring array is an array of rings, they may be closed (polygons) - in which case the first
     // ring is taken to be the boundary and subsequent rings are holes (and could probably be cut
     // into the parent polygon somehow), or open (polylines)
     private static RingArray ringArrayFrom(BagArray ringArray, BagObject properties) {
-        var result = new ArrayList<Segments>();
+        var result = new ArrayList<Polygon>();
         for (int i = 0, count = ringArray.getCount(); i < count; ++i) {
             result.add(ringFrom(ringArray.getBagArray(i)));
         }
