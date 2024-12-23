@@ -57,6 +57,11 @@ public class Tuple {
     return new Tuple (Math.round(x), Math.round(y), Math.round(w));
   }
 
+  public Tuple signum() {
+    // make sure this is a vector (not a point or unprojected point)
+    return new Tuple (Math.signum(x), Math.signum(y), Math.signum(w));
+  }
+
   /**
    * @return the vector dot product, which is the cosine of the angle betwen the input vectors times
    * their lengths:

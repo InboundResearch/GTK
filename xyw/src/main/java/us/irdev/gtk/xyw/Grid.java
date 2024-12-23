@@ -59,6 +59,20 @@ public class Grid<T> {
         return results;
     }
 
+    public List<Domain> enumerate (Domain input) {
+        var results = new ArrayList<Domain> ();
+        input = Domain.intersection (domain, input);
+        var bottomLeft = input.min.subtract(domain.min).hquotient(spacing).floor();
+        var topRight = input.max.subtract(domain.min).hquotient(spacing).ceil();
+        for (var y = (int) bottomLeft.y; y < (int) topRight.y; y++) {
+            for (var x = (int) bottomLeft.x; x < (int) topRight.x; x++) {
+                var pt = domain.min.add(spacing.hproduct (VEC(x, y)));
+                results.add (new Domain (pt, pt.add(spacing)));
+            }
+        }
+        return results;
+    }
+
     public double occupancy () {
         return cells.size() / (double) (width * height);
     }

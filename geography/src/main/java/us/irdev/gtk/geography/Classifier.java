@@ -31,16 +31,19 @@ public class Classifier {
     private final static int MULTIPLIER = 16;
 
     public Classifier (List<RingArray> ringArrays) {
+        /*
         var computedDomain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
         var gridDomain = computedDomain.valid() ? computedDomain : new Domain (-180., 180., -90., 90.);
-        //grid = new Grid<> (gridDomain, ringArrays.size() * MULTIPLIER);
-        grid = new Grid<> (new Domain (-180., 180., -90., 90.), VEC(0.5, 0.5));
+        grid = new Grid<> (gridDomain, ringArrays.size() * MULTIPLIER);
+        */
+        grid = new Grid<> (new Domain (-180., 180., -90., 90.), VEC(0.25, 0.25));
 
         // populate the grid, this is not particularly efficient
-        var domains = grid.enumerate();
-        log.info ("Populating {} Ring Arrays in {} domains", ringArrays.size(), domains.size());
-        for (var domain : domains) {
-            for (var ringArray : ringArrays) {
+        log.info ("Populating {} Ring Arrays", ringArrays.size());
+        for (var ringArray : ringArrays) {
+            var domains = grid.enumerate (ringArray.domain());
+            //log.info ("Populating into {} domains", domains.size());
+            for (var domain : domains) {
                 switch (ringArray.classify (domain)) {
                     case NO_INTERSECTION:
                         break;

@@ -26,13 +26,8 @@ public class RingArray {
         this (segmentsList.get(0), segmentsList.subList (1, segmentsList.size()), properties);
     }
 
-    public boolean contains(Segments segments) {
-        // test the boundary, and if that passes, test the holes for exclusion
-        return ListFunc.reduce (holes, boundary.contains (segments), (hole, value) -> value && !hole.contains (segments));
-    }
-
     public boolean contains(Tuple pt) {
-        return contains (boundary.getSegmentsForContains(pt));
+        return ListFunc.reduce (holes, boundary.contains (pt), (hole, value) -> value && !hole.contains (pt));
     }
 
     public Classification classify (Domain domain) {

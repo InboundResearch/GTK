@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static us.irdev.gtk.xyw.Tuple.PT;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -74,5 +75,19 @@ public class SegmentsPairTest {
 
     List<Tuple> intersections = SegmentsPair.intersections (boundedIntersections);
     drawSvg("pathologicalCase-intersections", raw, intersections, null);
+  }
+
+  @Test
+  public void testReduced() {
+    var test = List.of(new Segment(PT(-106.125000, 23.125000), PT(-102.425320, 23.125000)));
+    var segments = List.of(
+            new Segment(PT(-105.511292, 23.125271), PT(-105.510185, 23.125000)),
+            new Segment(PT(-105.510185, 23.125000), PT(-105.508995, 23.125059))
+    );
+    var sp = new SegmentsPair(new Segments (test), new Segments(segments));
+    var intersections = sp.intersections ();
+    assertNotNull(intersections);
+    assertEquals(2, intersections.size());
+    drawSvg("reduced", sp, null, null);
   }
 }

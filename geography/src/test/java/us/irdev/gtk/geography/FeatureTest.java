@@ -111,15 +111,24 @@ public class FeatureTest {
   }
 
   @Test
-  public void testUsa() {
-    var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM0/geoBoundaries-USA-ADM0.geojson");
-    drawSvg ("usa", features, new Domain(-180, -60, 15, 75));
+  public void testADM0() {
+    //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM0/geoBoundaries-USA-ADM0.geojson");
+    var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM0.geojson.gz").toString());
+    drawSvg ("usa-adm0", features, new Domain(-180, -60, 15, 75));
   }
 
   @Test
-  public void testStates() {
-    var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson");
-    drawSvg ("states", features, new Domain(-180, -60, 15, 75));
+  public void testADM1() {
+    //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson");
+    var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM1.geojson.gz").toString());
+    drawSvg ("usa-adm1", features, new Domain(-180, -60, 15, 75));
+  }
+
+  @Test
+  public void testADM2() {
+    //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson");
+    var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM2.geojson.gz").toString());
+    drawSvg ("usa-adm2", features, new Domain(-180, -60, 15, 75));
   }
 
   @Test

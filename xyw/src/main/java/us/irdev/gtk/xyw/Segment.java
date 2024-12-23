@@ -33,10 +33,9 @@ public class Segment {
     return v.norm ();
   }
 
-  public boolean pointIsInSegment(Tuple point) {
-    assert (line.pointIsOnLine (point));
+  public boolean contains(Tuple point) {
     Tuple delta = point.subtract(a).hquotient(v);
-    return (delta.x > -TOLERANCE) && (delta.y >= -TOLERANCE) && (delta.x <= 1 + TOLERANCE) && (delta.y <= 1 + TOLERANCE);
+    return (delta.x > -TOLERANCE) && (delta.y >= -TOLERANCE) && (delta.x <= 1 + TOLERANCE) && (delta.y <= 1 + TOLERANCE) && line.pointIsOnLine (point);
   }
 
   public Tuple mid() {

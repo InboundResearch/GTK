@@ -28,8 +28,8 @@ public class SegmentTest {
     Segment ray = new Segment (PT (0, 0), PT (2, 2));
     Tuple pt = Segment.intersect (ray, segment);
     assertSimilar (PT (1, 1), pt);
-    assertTrue(segment.pointIsInSegment (pt));
-    assertTrue(ray.pointIsInSegment (pt));
+    assertTrue(segment.contains(pt));
+    assertTrue(ray.contains(pt));
   }
 
   @Test
@@ -39,7 +39,7 @@ public class SegmentTest {
 
     Segment segment = new Segment (a, b);
     Tuple origin = segment.line.origin();
-    assertTrue(segment.pointIsInSegment (origin));
+    assertTrue(segment.contains(origin));
 
     assertSimilar (VEC (-1, -1).normalized (), segment.line.n());
 
@@ -49,11 +49,11 @@ public class SegmentTest {
 
     assertSimilar (segment.line.distanceToPoint (PT (0, 0)), sqrt (2));
 
-    assertTrue(segment.pointIsInSegment (PT (0.5, 1.5)));
+    assertTrue(segment.contains(PT (0.5, 1.5)));
     assertTrue(segment.line.pointIsOnLine (PT (1.5, 0.5)));
-    assertFalse(segment.pointIsInSegment (PT (1.5, 0.5)));
+    assertFalse(segment.contains(PT (1.5, 0.5)));
     assertTrue(segment.line.pointIsOnLine (PT (-0.5, 2.5)));
-    assertFalse(segment.pointIsInSegment (PT (-0.5, 2.5)));
+    assertFalse(segment.contains(PT (-0.5, 2.5)));
   }
 
   @Test

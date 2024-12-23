@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 
 import static us.irdev.gtk.xyw.Tuple.PT;
+import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class Domain {
   private static final Logger log = LogManager.getLogger(Domain.class);
@@ -95,6 +96,15 @@ public class Domain {
    */
   public Tuple center() {
     return min.add(max).scale(0.5);
+  }
+
+  public Tuple jitteredCenter () {
+    var quarterSize = size().scale(0.25);
+    return center().add (quarterSize.hproduct (VEC(Math.random(), Math.random())));
+  }
+
+  public Tuple randomSample () {
+    return min.add (size().hproduct (VEC(Math.random(), Math.random())));
   }
 
   public double top() {
