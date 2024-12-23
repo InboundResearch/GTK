@@ -20,7 +20,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <gtk.version>1.0.4</gtk.version>
+    <gtk.version>1.0.5</gtk.version>
   </properties>
 
   <scm>
