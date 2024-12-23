@@ -14,7 +14,6 @@ import java.util.*;
 import static us.irdev.gtk.xyw.Tuple.PT;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static us.irdev.gtk.xyw.Tuple.VEC;
 
 public class ClassifierTest {
     private static final Logger log = LogManager.getLogger(ClassifierTest.class);

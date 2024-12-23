@@ -23,13 +23,6 @@ public class Classifier {
     public record Container(boolean trivialAccept, RingArray ringArray) {}
     public final Grid<Container> grid;
 
-    // the grid sizing is based on the sqrt (n) where n is the number of children. this is fine if
-    // the children are uniformly distributed, but at some levels of the jurisdictional hierarchy
-    // they are not. in order to give more granularity, we buffer the n with this multiplier, at the
-    // possible expense of creating a few more redundant cells. this value is an arm's length
-    // estimate, not computed in any way.
-    private final static int MULTIPLIER = 16;
-
     public Classifier (List<RingArray> ringArrays) {
         /*
         var computedDomain = ListFunc.reduce(ringArrays, new Domain(), (ringArray, dom) -> Domain.union (ringArray.domain (), dom));
