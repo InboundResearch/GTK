@@ -18,7 +18,7 @@ public class ClassifierTest {
     private static final Logger log = LogManager.getLogger(ClassifierTest.class);
 
     @Test
-    public void testClassifier() {
+    public void testClassifier() throws Exception {
         var allFeatures = List.of(
                 //Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson")
                 Feature.fromGeoJson("data/USA-ADM1.geojson.gz")
@@ -78,7 +78,7 @@ public class ClassifierTest {
     }
 
     @Test
-    public void testUtah() {
+    public void testUtah() throws Exception {
         var features = Feature.fromGeoJson("data/USA-ADM1.geojson.gz");
 
         // set up the domain that appears to be failing to clip
@@ -104,7 +104,7 @@ public class ClassifierTest {
     }
 
     @Test
-    public void testSinaloa() {
+    public void testSinaloa() throws Exception {
         var features = Feature.fromGeoJson("data/MEX-ADM1.geojson.gz");
 
         // set up the domain that appears to be failing to clip
@@ -131,7 +131,7 @@ public class ClassifierTest {
     }
 
     @Test
-    public void testDurango() {
+    public void testDurango() throws Exception {
         var features = Feature.fromGeoJson("data/MEX-ADM1.geojson.gz");
 
         // set up the domain that appears to be failing to clip
@@ -158,7 +158,7 @@ public class ClassifierTest {
         classifier.toSvg("durango_classifier");
     }
 
-    private List<RingArray> ringArraysFromGeoJson(String source) {
+    private List<RingArray> ringArraysFromGeoJson(String source) throws Exception {
         var ringArrays = new ArrayList<RingArray>();
         for (var feature : Feature.fromGeoJson(source)) {
             ringArrays.addAll(feature.ringArrays);
@@ -166,7 +166,7 @@ public class ClassifierTest {
         return ringArrays;
     }
 
-    private void testADM2toADM1(String country) {
+    private void testADM2toADM1(String country) throws Exception {
         var adm1 = new Classifier(ringArraysFromGeoJson("data/" + country + "-ADM1.geojson.gz"));
         var adm2 = ringArraysFromGeoJson("data/" + country + "-ADM2.geojson.gz");
         adm1.toSvg("adm1");
@@ -218,7 +218,7 @@ public class ClassifierTest {
     }
 
     @Test
-    public void testMappings() {
+    public void testMappings() throws Exception {
         testADM2toADM1("USA");
         testADM2toADM1("MEX");
     }
