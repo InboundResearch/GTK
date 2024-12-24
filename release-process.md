@@ -16,3 +16,6 @@ NOTE: we are not using the typical SNAPSHOT notation for the versions, preferrin
 9. Update version in POM file
 10. `mvn clean install`
 11. Checkin all changes
+
+## Results
+Check at https://central.sonatype.com/publishing/deployments to see the publication process

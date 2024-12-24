@@ -7,7 +7,7 @@
   <parent>
     <groupId>us.irdev</groupId>
     <artifactId>ir-pom</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.5</version>
     <relativePath />
   </parent>
 
@@ -20,7 +20,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <gtk.version>1.0.2</gtk.version>
+    <gtk.version>1.0.5</gtk.version>
   </properties>
 
   <scm>

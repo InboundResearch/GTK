@@ -42,7 +42,7 @@ public class FeatureTest {
   }
 
   @Test
-  public void testSimple() {
+  public void testSimple() throws Exception {
     var features = Feature.fromGeoJson(Paths.get("data", "simple.json").toString());
     drawSvg ("simple", features, new Domain(-25, -5, 5, 25));
     assertEquals(1, features.size());
@@ -59,7 +59,7 @@ public class FeatureTest {
   }
 
   @Test
-  public void testSimpleWithHole() {
+  public void testSimpleWithHole() throws Exception {
     var features = Feature.fromGeoJson(Paths.get("data", "simple_with_hole.json").toString());
     drawSvg ("simple_with_hole", features, new Domain(-25, -5, 5, 25));
     assertEquals(1, features.size());
@@ -81,7 +81,7 @@ public class FeatureTest {
   }
 
   @Test
-  public void testTexas() {
+  public void testTexas() throws Exception {
     var features = Feature.fromGeoJson(Paths.get("data", "texas.json.gz").toString());
     drawSvg ("texas", features, null);
     assertEquals(1, features.size());
@@ -111,28 +111,28 @@ public class FeatureTest {
   }
 
   @Test
-  public void testADM0() {
+  public void testADM0() throws Exception {
     //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM0/geoBoundaries-USA-ADM0.geojson");
     var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM0.geojson.gz").toString());
     drawSvg ("usa-adm0", features, new Domain(-180, -60, 15, 75));
   }
 
   @Test
-  public void testADM1() {
+  public void testADM1() throws Exception {
     //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson");
     var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM1.geojson.gz").toString());
     drawSvg ("usa-adm1", features, new Domain(-180, -60, 15, 75));
   }
 
   @Test
-  public void testADM2() {
+  public void testADM2() throws Exception {
     //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson");
     var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM2.geojson.gz").toString());
     drawSvg ("usa-adm2", features, new Domain(-180, -60, 15, 75));
   }
 
   @Test
-  public void testBadData() {
+  public void testBadData() throws Exception {
     var features = Feature.fromGeoJson(Paths.get("data", "bad_data.json").toString());
     drawSvg ("bad_data", features, null);
   }

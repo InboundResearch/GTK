@@ -12,6 +12,7 @@ import us.irdev.gtk.xyw.*;
 import static us.irdev.gtk.xyw.Tuple.PT;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -101,23 +102,47 @@ public class Feature {
         }
     }
 
-    public static List<Feature> fromGeoJson(String source) {
-        // read the input file, some may be gzipped
+    private static InputStream getFileOrResource(String source) throws Exception {
+        // attempt to load as a file
+        File file = new File(source);
+        if (file.exists() && file.isFile()) {
+            return Files.newInputStream(file.toPath());
+        }
+
+        // attempt to load as a resource using the context class loader
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader != null) {
+            InputStream resourceStream = contextClassLoader.getResourceAsStream(source);
+            if (resourceStream != null) {
+                return resourceStream;
+            }
+        }
+
+        // fallback to using the library class's class loader
+        InputStream resourceStream = Feature.class.getClassLoader().getResourceAsStream(source);
+        if (resourceStream != null) {
+            return resourceStream;
+        }
+
+        // If neither works, throw an exception
+        throw new Exception("File or resource not found: " + source);
+    }
+
+    private static InputStream getSourceAsInputStream(String source) throws Exception {
+        var inputStream = getFileOrResource (source);
+        return source.endsWith(".gz") ? new GZIPInputStream(inputStream) : inputStream;
+    }
+
+    public static List<Feature> fromGeoJson(String source) throws Exception {
         BagObject root;
         if (source.startsWith("https://")) {
             root = BagObjectFrom.url(source);
-        } else if (source.endsWith(".gz")) {
-            try (GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(source))) {
-                root = BagObjectFrom.inputStream(gzipInputStream);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         } else {
-            root = BagObjectFrom.file(new File(source));
+            root = BagObjectFrom.inputStream(getSourceAsInputStream(source));
         }
         log.info ("Loaded {}", source);
 
-        // handle the file contents
+        // handle the geojson contents
         switch (root.getString("type")) {
             case "Feature": {
                 return List.of(new Feature(root));
