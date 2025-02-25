@@ -48,7 +48,6 @@ public class Classifier {
                 }
             }
         }
-
     }
 
     public BagObject getAt (Tuple pt) {
@@ -59,6 +58,11 @@ public class Classifier {
             }
         }
         return null;
+    }
+
+    public double distanceToNearestEdge (Tuple pt) {
+        // XXX placeholder
+        return 1.0;
     }
 
     private Classification classifyChildren (Set<Container> children) {
