@@ -1,9 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- parent SD-POM provides a turn-key Java 8 build environment with up-to-date dependencies for
-       test and coverage. we only need to update the scm developer connection and add the site
-       deploy script. -->
+  <!-- parent POM provides a turn-key Java build environment with up-to-date dependencies -->
   <parent>
     <groupId>us.irdev</groupId>
     <artifactId>ir-pom</artifactId>
@@ -20,7 +18,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <gtk.version>1.0.5</gtk.version>
+    <gtk.version>1.0.6</gtk.version>
   </properties>
 
   <scm>

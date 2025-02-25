@@ -121,7 +121,7 @@ public class FeatureTest {
   public void testADM1() throws Exception {
     //var features = Feature.fromGeoJson("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/USA/ADM1/geoBoundaries-USA-ADM1.geojson");
     var features = Feature.fromGeoJson(Paths.get("data", "USA-ADM1.geojson.gz").toString());
-    drawSvg ("usa-adm1", features, new Domain(-180, -60, 15, 75));
+    drawSvg ("usa-adm1", features, new Domain(-128, -65, 25, 52));
   }
 
   @Test
