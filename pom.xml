@@ -18,7 +18,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <gtk.version>1.0.6</gtk.version>
+    <gtk.version>1.0.7</gtk.version>
   </properties>
 
   <scm>

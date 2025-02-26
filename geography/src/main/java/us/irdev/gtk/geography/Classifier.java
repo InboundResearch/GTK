@@ -31,6 +31,7 @@ public class Classifier {
         grid = new Grid<> (new Domain (-180., 180., -90., 90.), VEC(0.25, 0.25));
 
         // populate the grid, this is not particularly efficient
+        // XXX could we trim the ring arrays to the domains?
         log.info ("Populating {} Ring Arrays", ringArrays.size());
         for (var ringArray : ringArrays) {
             var domains = grid.enumerate (ringArray.domain());
@@ -48,7 +49,6 @@ public class Classifier {
                 }
             }
         }
-
     }
 
     public BagObject getAt (Tuple pt) {
@@ -59,6 +59,41 @@ public class Classifier {
             }
         }
         return null;
+    }
+
+    public double distanceToNearestBoundary (Tuple pt, double limitRadius) {
+        // compute the search domain
+        var delta = VEC(limitRadius, limitRadius);
+        var min = pt.subtract(delta);
+        var max = pt.add(delta);
+        var searchDomain = new Domain (min, max);
+
+        // set up the nearest edge value
+        var nearestDistance = Double.POSITIVE_INFINITY;
+
+        // enumerate the grid cell domains that overlap our search domain
+        var searchDomains = grid.enumerate (searchDomain);
+        for (var domain : searchDomains) {
+            var children = grid.getAt(domain.center());
+            for (var child : children) {
+                if (!child.trivialAccept) {
+                    var ringArray = child.ringArray;
+                    var boundary = ringArray.boundary;
+                    var trimmedBoundary = boundary.segments.trimToDomain (domain);
+                    if (trimmedBoundary != null) {
+                        for (var segment : trimmedBoundary.segments) {
+                            var distance = Math.abs(segment.line.distanceToPoint(pt));
+                            if (distance < nearestDistance) {
+                                nearestDistance = distance;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // return the found nearest distance
+        return nearestDistance;
     }
 
     private Classification classifyChildren (Set<Container> children) {

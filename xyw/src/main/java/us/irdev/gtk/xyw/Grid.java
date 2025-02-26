@@ -23,7 +23,6 @@ public class Grid<T> {
     }
 
     private static Tuple computeSpacing (Domain domain, int n) {
-        var aspectRatio = domain.aspectRatio();
         var sqrtn = Math.sqrt(n);
         var dimX = 1.0 / Math.ceil (sqrtn * domain.aspectRatio());
         var dimY = 1.0 / Math.ceil (sqrtn);

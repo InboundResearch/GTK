@@ -10,6 +10,7 @@ import us.irdev.gtk.xyw.*;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static us.irdev.gtk.xyw.Assertions.assertSimilar;
 import static us.irdev.gtk.xyw.Tuple.PT;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -221,5 +222,19 @@ public class ClassifierTest {
     public void testMappings() throws Exception {
         testADM2toADM1("USA");
         testADM2toADM1("MEX");
+    }
+
+    @Test
+    public void testDistance() throws Exception {
+        var features = Feature.fromGeoJson(Paths.get("data", "simple_with_hole.json").toString());
+        var classifier = new Classifier(features.get(0).ringArrays);
+        assertEquals (Double.POSITIVE_INFINITY, classifier.distanceToNearestBoundary (PT(-15, 15), 3));
+        assertSimilar (5, classifier.distanceToNearestBoundary (PT(-15, 15), 7));
+
+        assertSimilar (3, classifier.distanceToNearestBoundary (PT(-17, 15), 4));
+        assertSimilar (2, classifier.distanceToNearestBoundary (PT(-12, 15), 4));
+
+        assertSimilar (3, classifier.distanceToNearestBoundary (PT(-15, 17), 4));
+        assertSimilar (2, classifier.distanceToNearestBoundary (PT(-15, 12), 4));
     }
 }
